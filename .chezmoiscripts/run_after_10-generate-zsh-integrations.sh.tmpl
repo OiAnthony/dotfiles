@@ -1,0 +1,25 @@
+#!/bin/sh
+set -eu
+
+target="${HOME}/.config/zsh/generated"
+mkdir -p "$target"
+
+PATH="${HOME}/.local/bin:${HOME}/.local/share/mise/shims:${HOME}/.bun/bin:${HOME}/Library/pnpm:/opt/homebrew/bin:/usr/bin:/bin"
+export PATH
+
+generate() {
+  name="$1"
+  shift
+  tmp="${target}/.${name}.tmp.$$"
+  if command -v "$1" >/dev/null 2>&1 && "$@" >"$tmp" 2>/dev/null && test -s "$tmp"; then
+    mv "$tmp" "${target}/${name}.zsh"
+  else
+    rm -f "$tmp"
+    : >"${target}/${name}.zsh"
+  fi
+}
+
+generate fzf fzf --zsh
+generate zoxide zoxide init zsh
+generate starship starship init zsh
+rm -f "${target}/mise.zsh"

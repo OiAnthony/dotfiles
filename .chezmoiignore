@@ -1,0 +1,11 @@
+README.md
+README.en.md
+.agents/
+install.sh
+mise.toml
+Makefile
+Dockerfile
+.dockerignore
+IMPLEMENTATION.md
+scripts/
+docs/
