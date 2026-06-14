@@ -78,15 +78,15 @@ fi
 
 # ---- 辅助函数 ----
 
-_dev_setup_is_china() {
-  [[ "$DEV_SETUP_CHINA_MIRROR" == "1" ]] && return 0
-  [[ "$DEV_SETUP_CHINA_MIRROR" == "0" ]] && return 1
+_dotfiles_is_china() {
+  [[ "$DOTFILES_CHINA_MIRROR" == "1" ]] && return 0
+  [[ "$DOTFILES_CHINA_MIRROR" == "0" ]] && return 1
 
   local country
   country=$(curl -s --max-time 2 https://ipinfo.io/country 2>/dev/null | tr -d '[:space:]')
   [[ -z "$country" ]] && country=$(curl -s --max-time 2 http://ip-api.com/line/?fields=countryCode 2>/dev/null | tr -d '[:space:]')
 
-  local cache_file="$HOME/.cache/dev-setup-china-mirror"
+  local cache_file="$HOME/.cache/dotfiles-china-mirror"
   mkdir -p "$(dirname "$cache_file")"
   echo "${country:-UNKNOWN}" > "$cache_file"
 
@@ -287,7 +287,7 @@ _install_tools() {
   if [[ "$CURRENT_OS" == "Darwin" ]]; then
     _configure_default_shell
 
-    if _dev_setup_is_china; then
+    if _dotfiles_is_china; then
       echo "🇨🇳 检测到中国大陆网络，使用 USTC 镜像加速 Homebrew..."
       export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
       export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
@@ -306,7 +306,7 @@ _install_tools() {
       echo "✅ Homebrew 已安装"
     fi
 
-    if _dev_setup_is_china; then
+    if _dotfiles_is_china; then
       if [[ -z "${https_proxy:-}${HTTPS_PROXY:-}" ]] && [[ -z "${GITHUB_TOKEN:-}" ]]; then
         echo "   ⚠️  mise 通过 GitHub release 拉取二进制，建议设置 https_proxy 或 GITHUB_TOKEN 加速。"
       fi
@@ -319,7 +319,7 @@ _install_tools() {
     _install_base_linux
     _configure_default_shell
 
-    if _dev_setup_is_china; then
+    if _dotfiles_is_china; then
       echo "🇨🇳 检测到中国大陆网络。"
       if [[ -z "${https_proxy:-}${HTTPS_PROXY:-}" ]] && [[ -z "${GITHUB_TOKEN:-}" ]]; then
         echo "   ⚠️  mise 通过 GitHub release 拉取二进制，建议设置 https_proxy 或 GITHUB_TOKEN 加速。"
@@ -430,7 +430,7 @@ fi
 echo ""
 
 # 自动激活新环境（CI 环境下跳过）
-if [[ "${CI:-}" == "true" ]] || [[ "${DEV_SETUP_NO_EXEC:-}" == "1" ]]; then
+if [[ "${CI:-}" == "true" ]] || [[ "${DOTFILES_NO_EXEC:-}" == "1" ]]; then
   echo "ℹ️  CI/non-interactive mode detected, skipping shell exec."
   exit 0
 fi

@@ -1,12 +1,12 @@
 typeset -U path PATH fpath FPATH
 
 # China mainland mirror detection for Homebrew acceleration.
-# Can be forced: DEV_SETUP_CHINA_MIRROR=1 (enable) or 0 (disable).
-_dev_setup_is_china() {
-  [[ "$DEV_SETUP_CHINA_MIRROR" == "1" ]] && return 0
-  [[ "$DEV_SETUP_CHINA_MIRROR" == "0" ]] && return 1
+# Can be forced: DOTFILES_CHINA_MIRROR=1 (enable) or 0 (disable).
+_dotfiles_is_china() {
+  [[ "$DOTFILES_CHINA_MIRROR" == "1" ]] && return 0
+  [[ "$DOTFILES_CHINA_MIRROR" == "0" ]] && return 1
 
-  local cache_file="$HOME/.cache/dev-setup-china-mirror"
+  local cache_file="$HOME/.cache/dotfiles-china-mirror"
   if [[ -f "$cache_file" ]] && [[ -z $(find "$cache_file" -mtime +1 2>/dev/null) ]]; then
     [[ "$(cat "$cache_file")" == "CN" ]] && return 0 || return 1
   fi
@@ -23,7 +23,7 @@ _dev_setup_is_china() {
 
 # Static Homebrew environment. Avoid spawning `brew shellenv` on every login.
 if [[ -d /opt/homebrew ]]; then
-  if _dev_setup_is_china; then
+  if _dotfiles_is_china; then
     export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
     export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
     export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
