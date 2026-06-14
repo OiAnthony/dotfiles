@@ -78,22 +78,6 @@ fi
 
 # ---- 辅助函数 ----
 
-_dotfiles_is_china() {
-  [[ "$DOTFILES_CHINA_MIRROR" == "1" ]] && return 0
-  [[ "$DOTFILES_CHINA_MIRROR" == "0" ]] && return 1
-
-  local country
-  country=$(curl -s --max-time 2 https://ipinfo.io/country 2>/dev/null | tr -d '[:space:]')
-  [[ -z "$country" ]] && country=$(curl -s --max-time 2 http://ip-api.com/line/?fields=countryCode 2>/dev/null | tr -d '[:space:]')
-
-  local cache_file="$HOME/.cache/dotfiles-china-mirror"
-  mkdir -p "$(dirname "$cache_file")"
-  echo "${country:-UNKNOWN}" > "$cache_file"
-
-  [[ "$country" == "CN" ]] && return 0
-  return 1
-}
-
 _ensure_sudo() {
   if [[ "$EUID" -eq 0 ]]; then
     return 0
@@ -287,14 +271,6 @@ _install_tools() {
   if [[ "$CURRENT_OS" == "Darwin" ]]; then
     _configure_default_shell
 
-    if _dotfiles_is_china; then
-      echo "🇨🇳 检测到中国大陆网络，使用 USTC 镜像加速 Homebrew..."
-      export HOMEBREW_API_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles/api"
-      export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
-      export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.ustc.edu.cn/brew.git"
-      export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-core.git"
-    fi
-
     if ! command -v brew &> /dev/null; then
       echo "📦 安装 Homebrew（仅本体，工具链由 mise 管理）..."
       _ensure_sudo
@@ -306,25 +282,12 @@ _install_tools() {
       echo "✅ Homebrew 已安装"
     fi
 
-    if _dotfiles_is_china; then
-      if [[ -z "${https_proxy:-}${HTTPS_PROXY:-}" ]] && [[ -z "${GITHUB_TOKEN:-}" ]]; then
-        echo "   ⚠️  mise 通过 GitHub release 拉取二进制，建议设置 https_proxy 或 GITHUB_TOKEN 加速。"
-      fi
-    fi
-
     _install_mise
     _install_fonts_macos
 
   elif [[ "$CURRENT_OS" == "Linux" ]]; then
     _install_base_linux
     _configure_default_shell
-
-    if _dotfiles_is_china; then
-      echo "🇨🇳 检测到中国大陆网络。"
-      if [[ -z "${https_proxy:-}${HTTPS_PROXY:-}" ]] && [[ -z "${GITHUB_TOKEN:-}" ]]; then
-        echo "   ⚠️  mise 通过 GitHub release 拉取二进制，建议设置 https_proxy 或 GITHUB_TOKEN 加速。"
-      fi
-    fi
 
     _install_mise
 

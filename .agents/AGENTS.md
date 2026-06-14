@@ -183,11 +183,6 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - Prefer `aqua:` or `ubi:` entries in `mise.toml`. After editing `mise.toml`, run `mise install`.
 - Pinned runtimes in `mise.toml`: Node lts, Go latest, Python 3.14, Java 21, uv latest. Bun and pnpm are installed by `install.sh` via their official scripts, not mise.
 
-### Network Notes
-
-- China mirror detection can be forced with `DOTFILES_CHINA_MIRROR=1` or disabled with `DOTFILES_CHINA_MIRROR=0`. The detected result is cached in `~/.cache/dotfiles-china-mirror`.
-- Even in China mode, `mise` still pulls from GitHub releases. Network-related install failures are often resolved by `https_proxy` or `GITHUB_TOKEN`.
-
 ### Writing Conventions
 
 - User-facing docs use Simplified Chinese.
