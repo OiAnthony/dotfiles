@@ -167,7 +167,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - `make lint` runs `shellcheck install.sh`.
 - `make test`, `make test-idempotent`, and `make test-root` all depend on `make build` and require `docker` or `podman`.
 - `make test-all` runs `lint -> test -> test-idempotent -> test-root`.
-- For non-interactive verification of `install.sh`, set `CI=true` or `DEV_SETUP_NO_EXEC=1`.
+- For non-interactive verification of `install.sh`, set `CI=true` or `DOTFILES_NO_EXEC=1`.
 
 ### Chezmoi Conventions
 
@@ -185,7 +185,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ### Network Notes
 
-- China mirror detection can be forced with `DEV_SETUP_CHINA_MIRROR=1` or disabled with `DEV_SETUP_CHINA_MIRROR=0`. The detected result is cached in `~/.cache/dev-setup-china-mirror`.
+- China mirror detection can be forced with `DOTFILES_CHINA_MIRROR=1` or disabled with `DOTFILES_CHINA_MIRROR=0`. The detected result is cached in `~/.cache/dotfiles-china-mirror`.
 - Even in China mode, `mise` still pulls from GitHub releases. Network-related install failures are often resolved by `https_proxy` or `GITHUB_TOKEN`.
 
 ### Writing Conventions
