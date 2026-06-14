@@ -2,7 +2,7 @@
 
 ## 概述
 
-dev-setup 使用 Docker 容器提供隔离的测试环境，验证 `install.sh` 在干净系统上的安装结果。
+dotfiles 使用 Docker 容器提供隔离的测试环境，验证 `install.sh` 在干净系统上的安装结果。
 
 ## 测试类型
 
@@ -13,7 +13,6 @@ dev-setup 使用 Docker 容器提供隔离的测试环境，验证 `install.sh` 
 **覆盖文件**：
 
 - `install.sh`
-- `dotfiles/dev-setup.zsh`（advisory-only，zsh 语法可能误报）
 
 **运行方式**：
 
@@ -28,11 +27,10 @@ make lint
 **测试内容**：
 
 - mise 工具链安装（starship, fzf, fd, rg, gh, lazygit, delta, nvim, node, go, python, java, uv, jq）
-- Oh My Zsh 安装
-- Zsh 插件克隆（zsh-syntax-highlighting, zsh-autosuggestions, zsh-completions）
-- 软链接创建（.gitconfig, starship.toml, mise/config.toml）
-- .zshrc 配置追加
+- chezmoi 部署的 dotfiles（.zshrc, .zshenv, .zprofile, .gitconfig, core.zsh, starship.toml）
+- 软链接验证（mise/config.toml, .agents）
 - 可选工具安装（Bun, pnpm）
+- macOS 额外验证：字体安装、Homebrew
 
 **运行方式**：
 
@@ -40,23 +38,7 @@ make lint
 make test
 ```
 
-### 3. Kaku 路径测试
-
-**目的**：验证 Kaku 检测逻辑
-
-**测试场景**：
-
-- 创建 `~/.config/kaku/zsh/kaku.zsh` 模拟 Kaku 存在
-- 运行 install.sh
-- 验证插件安装被正确跳过（避免重复）
-
-**运行方式**：
-
-```bash
-make test-kaku
-```
-
-### 4. 幂等性测试
+### 3. 幂等性测试
 
 **目的**：验证重复运行安全性
 
@@ -95,27 +77,18 @@ make test-idempotent
 - 冷缓存：~10 分钟
 - 热缓存：~4 分钟（仅重新复制项目文件）
 
-## CI/CD 流程
+## 本地测试命令
 
-### GitHub Actions
+通过 Makefile 在本地运行测试：
 
-**触发条件**：
-
-- push 到 main 分支
-- 创建 PR
-
-**Job 1: lint**（快速门禁）
-
-- 安装 ShellCheck
-- 检查 install.sh
-- 检查 dev-setup.zsh（advisory-only）
-
-**Job 2: integration**（依赖 lint）
-
-- 构建 Docker 镜像（使用 GitHub Actions 缓存）
-- 运行集成测试
-- 运行 Kaku 路径测试
-- 运行幂等性测试
+```bash
+make lint            # ShellCheck 静态检查
+make test            # 集成测试（testuser）
+make test-idempotent # 幂等性测试
+make test-root       # root 用户测试
+make test-piped      # 管道安装测试
+make test-all        # 全部测试
+```
 
 ## 不覆盖的范围
 
@@ -152,7 +125,7 @@ Docker 无法运行 macOS，以下路径不会被测试：
 make build
 
 # 进入容器
-docker run -it dev-setup-test bash
+docker run -it dotfiles-test bash
 
 # 手动运行安装
 ./install.sh
@@ -175,26 +148,24 @@ cat ~/.zshrc
 
 ### 添加新工具验证
 
-编辑 `scripts/test-install.sh`：
+编辑 `scripts/test-install.sh`，在 "验证 mise 工具" 部分添加新工具：
 
 ```bash
-# 在 "验证 Homebrew 包" 部分添加
-for cmd in git gh node python3 go starship fzf fd rg jq nvim zoxide tree NEW_TOOL; do
-    check_command "$cmd" || ((failed++))
+for tool in starship fzf zoxide fd rg gh lazygit delta nvim node go python uv jq NEW_TOOL; do
+    check_via_mise "$tool" || ((failed++))
 done
 ```
 
-### 修改 Kaku 检测逻辑
+### 修改安装检测逻辑
 
 同时更新：
 
 1. `install.sh` - 安装时检测
-2. `dotfiles/dev-setup.zsh` - 运行时检测
-3. `scripts/test-install.sh` - 测试验证
+2. `scripts/test-install.sh` - 测试验证
 
-### 更新 CI 缓存
+### 更新 Docker 缓存
 
-GitHub Actions 缓存键基于 Dockerfile 内容，修改 Dockerfile 会自动失效缓存。
+修改 `Dockerfile` 后会自动失效构建缓存，首次构建会较慢。
 
 ## 故障排查
 
