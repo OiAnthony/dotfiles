@@ -1,0 +1,35 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Backup files
+*.bak
+*.backup
+*.swp
+*.swo
+*~
+
+# Temp files
+*.tmp
+*.temp
+
+# Agent hooks (auto-managed)
+.agents/hooks/
+
+# System skills (auto-managed by platform)
+.agents/skills/.system/
+
+# nowledge-mem managed skills (symlinks, do not commit)
+.agents/skills/develop-pi-tui-extension
+.agents/skills/html-effectiveness
+.agents/skills/rewrite-doc
+
+# nowledge-mem metadata (auto-generated, do not commit)
+.agents/skills/.nowledge-mem
+
+# Python (skills contain Python scripts)
+__pycache__/
+*.py[codz]
+.pytest_cache/
+.ruff_cache/

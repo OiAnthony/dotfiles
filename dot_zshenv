@@ -1,0 +1,12 @@
+# Keep this file cheap: it runs for every Zsh process.
+typeset -U path PATH
+path=(
+  "$HOME/.local/bin"
+  "$HOME/.local/share/mise/shims"
+  "$HOME/.bun/bin"
+  "$HOME/Library/pnpm"
+  "$HOME/.volta/bin"
+  "$HOME/.cargo/bin"
+  $path
+)
+export PATH

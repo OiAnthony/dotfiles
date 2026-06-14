@@ -1,0 +1,49 @@
+# mise tool manifest (shared between macOS and Linux).
+# install.sh symlinks this file to ~/.config/mise/config.toml so it is
+# the global mise configuration on the host.
+#
+# Backends:
+#   - aqua/ubi: prebuilt GitHub release binaries (no toolchain required)
+#   - core: mise built-in language runtimes
+#
+# To pin a version, replace "latest" with a concrete version string.
+
+[tools]
+# Language runtimes
+node = "lts"
+bun = "latest"
+go = "latest"
+java = "21"
+python = "3.14"
+uv = "latest"
+
+# Shell experience
+"aqua:starship/starship" = "latest"
+"aqua:ajeetdsouza/zoxide" = "latest"
+"aqua:sxyazi/yazi" = "latest"
+"aqua:junegunn/fzf" = "latest"
+"aqua:sharkdp/fd" = "latest"
+"aqua:BurntSushi/ripgrep" = "latest"
+"aqua:jqlang/jq" = "latest"
+"aqua:neovim/neovim" = "latest"
+# Git tooling
+"aqua:cli/cli" = "latest"               # gh
+"aqua:dandavison/delta" = "latest"      # git-delta
+"aqua:jesseduffield/lazygit" = "latest"
+
+# AI
+"aqua:anthropics/claude-code" = "latest"
+"npm:agent-browser" = "latest"
+rtk = "latest"
+
+# Spec-driven development
+"npm:@fission-ai/openspec" = "latest"
+
+[settings]
+# Trust this config when symlinked into ~/.config/mise/config.toml.
+# (mise prompts on first use of repo-local configs; the global file is
+# implicitly trusted, but we set this explicitly for clarity.)
+experimental = true
+
+[settings.npm]
+package_manager = "bun"

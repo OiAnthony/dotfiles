@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+
+cache_dir="${XDG_CACHE_HOME:-${HOME}/.cache}/zsh"
+dump="${cache_dir}/zcompdump-$(zsh --version | awk '{print $2}')"
+mkdir -p "$cache_dir"
+
+ZSH_CONFIG_DIR="${HOME}/.config/zsh" zsh -fc '
+  typeset -U fpath FPATH
+  fpath=(
+    "$ZSH_CONFIG_DIR/completions"
+    /opt/homebrew/share/zsh/site-functions
+    $fpath
+  )
+  autoload -Uz compinit
+  compinit -i -d "$1"
+' -- "$dump"
