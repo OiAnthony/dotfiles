@@ -82,10 +82,13 @@ curl -fsSL https://raw.githubusercontent.com/OiAnthony/dotfiles/main/install.sh 
 
 然后运行 `mise install`。
 
-**改 Shell 配置**：用 chezmoi 工作流：
+**改 Shell 配置**：
+
+- **用户自定义**：直接编辑 `~/.zshrc`，添加自己的配置、环境变量或第三方工具初始化代码。这个文件不受 chezmoi 管理，不会被覆盖。
+- **修改核心配置**：用 chezmoi 工作流编辑 `~/.config/zsh/core.zsh`：
 
 ```bash
-chezmoi edit ~/.zshrc
+chezmoi edit ~/.config/zsh/core.zsh
 chezmoi diff
 chezmoi apply
 ```
