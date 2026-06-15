@@ -29,7 +29,9 @@ make lint
 - mise 工具链安装（starship, fzf, fd, rg, gh, lazygit, delta, nvim, node, go, python, java, uv, jq）
 - chezmoi 部署的 dotfiles（.zshrc, .zshenv, .zprofile, .gitconfig, core.zsh, starship.toml）
 - 软链接验证（mise/config.toml, .agents）
-- 可选工具安装（Bun, pnpm）
+- mise 管理的 Bun、Bun 驱动的 npm backend、pnpm 与 Zsh PATH
+- 完整交互式 Zsh 初始化、fzf 懒加载和 mise runtime 执行
+- 20 次热启动性能门禁：P95 不超过 100 ms
 - macOS 额外验证：字体安装、Homebrew
 
 **运行方式**：
@@ -90,6 +92,8 @@ make test-piped      # 管道安装测试
 make test-all        # 全部测试
 ```
 
+测试会优先使用当前 `GITHUB_TOKEN`；未设置时尝试读取 `gh auth token`，避免连续安装触发 GitHub 匿名 API 限流。token 仅作为容器环境变量传递，不会出现在命令行中。
+
 ## 不覆盖的范围
 
 ### macOS 特定路径
@@ -103,18 +107,7 @@ Docker 无法运行 macOS，以下路径不会被测试：
 
 ### Shell 启动性能
 
-不自动化测试 `time zsh -i -c exit`，原因：
-
-- 容器环境性能不代表真实环境
-- 性能优化主要针对 Kaku 集成，需手动验证
-
-### 交互式 Shell 会话
-
-不测试完整的 shell 会话，仅验证：
-
-- 配置文件存在
-- 配置文件被正确引用
-- 软链接指向正确
+容器测试使用伪终端运行完整交互式初始化，避免命中 GUI/no-TTY 快速返回分支。容器结果用于防止明显回退，真实机器仍使用 `benchmark-zsh` 验收。
 
 ## 本地调试
 

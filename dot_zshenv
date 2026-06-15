@@ -3,7 +3,8 @@ typeset -U path PATH
 path=(
   "$HOME/.local/bin"
   "$HOME/.local/share/mise/shims"
-  "$HOME/.bun/bin"
+  "$HOME/.local/share/pnpm/bin"
+  "$HOME/.local/share/pnpm"
   "$HOME/Library/pnpm"
   "$HOME/.volta/bin"
   "$HOME/.cargo/bin"

@@ -248,6 +248,15 @@
       "skillFolderHash": "b8f5ff07669681920b944fc1b7e8b0c3bbb09884",
       "installedAt": "2026-06-11T11:22:58.671Z",
       "updatedAt": "2026-06-11T11:22:58.671Z"
+    },
+    "improve": {
+      "source": "shadcn/improve",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/shadcn/improve.git",
+      "skillPath": "skills/improve/SKILL.md",
+      "skillFolderHash": "a9977b8771077a3bd6985d24450dffcc96206d2d",
+      "installedAt": "2026-06-15T02:14:12.686Z",
+      "updatedAt": "2026-06-15T02:14:12.686Z"
     }
   },
   "dismissed": {
