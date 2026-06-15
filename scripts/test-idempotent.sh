@@ -27,14 +27,14 @@ main() {
     local zshenv_md5
     local zprofile_md5
     local core_md5
-    local gitconfig_md5
+    local config_shared_md5
     local starship_md5
 
     zshrc_md5=$(md5sum "$HOME/.zshrc" | awk '{print $1}')
     zshenv_md5=$(md5sum "$HOME/.zshenv" | awk '{print $1}')
     zprofile_md5=$(md5sum "$HOME/.zprofile" | awk '{print $1}')
     core_md5=$(md5sum "$HOME/.config/zsh/core.zsh" | awk '{print $1}')
-    gitconfig_md5=$(md5sum "$HOME/.gitconfig" | awk '{print $1}')
+    config_shared_md5=$(md5sum "$HOME/.config/git/config-shared" | awk '{print $1}')
     starship_md5=$(md5sum "$HOME/.config/starship.toml" | awk '{print $1}')
 
     log_info "State recorded:"
@@ -42,7 +42,7 @@ main() {
     log_info "  .zshenv md5: $zshenv_md5"
     log_info "  .zprofile md5: $zprofile_md5"
     log_info "  core.zsh md5: $core_md5"
-    log_info "  .gitconfig md5: $gitconfig_md5"
+    log_info "  config-shared md5: $config_shared_md5"
     log_info "  starship.toml md5: $starship_md5"
 
     log_info "Running install.sh second time..."
@@ -58,14 +58,14 @@ main() {
     local zshenv_md5_after
     local zprofile_md5_after
     local core_md5_after
-    local gitconfig_md5_after
+    local config_shared_md5_after
     local starship_md5_after
 
     zshrc_md5_after=$(md5sum "$HOME/.zshrc" | awk '{print $1}')
     zshenv_md5_after=$(md5sum "$HOME/.zshenv" | awk '{print $1}')
     zprofile_md5_after=$(md5sum "$HOME/.zprofile" | awk '{print $1}')
     core_md5_after=$(md5sum "$HOME/.config/zsh/core.zsh" | awk '{print $1}')
-    gitconfig_md5_after=$(md5sum "$HOME/.gitconfig" | awk '{print $1}')
+    config_shared_md5_after=$(md5sum "$HOME/.config/git/config-shared" | awk '{print $1}')
     starship_md5_after=$(md5sum "$HOME/.config/starship.toml" | awk '{print $1}')
 
     if [[ "$zshrc_md5" == "$zshrc_md5_after" ]]; then
@@ -96,10 +96,10 @@ main() {
         ((failed += 1))
     fi
 
-    if [[ "$gitconfig_md5" == "$gitconfig_md5_after" ]]; then
-        log_info "✓ .gitconfig unchanged"
+    if [[ "$config_shared_md5" == "$config_shared_md5_after" ]]; then
+        log_info "✓ config-shared unchanged"
     else
-        log_error "✗ .gitconfig changed"
+        log_error "✗ config-shared changed"
         ((failed += 1))
     fi
 

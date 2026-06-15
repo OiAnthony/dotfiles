@@ -397,6 +397,28 @@ EOF
   else
     echo "✅ ~/.zshrc 已包含 core.zsh source"
   fi
+
+  # Bootstrap ~/.gitconfig（允许用户修改）
+  GITCONFIG="$HOME/.gitconfig"
+  
+  if [[ ! -f "$GITCONFIG" ]]; then
+    echo "📝 创建 ~/.gitconfig bootstrap..."
+    cat > "$GITCONFIG" <<'EOF'
+[include]
+	path = ~/.config/git/config-shared
+
+[user]
+	name = YOUR_NAME
+	email = YOUR_EMAIL
+EOF
+  elif ! grep -qF '[include]' "$GITCONFIG" || ! grep -qF 'path = ~/.config/git/config-shared' "$GITCONFIG"; then
+    echo "⚠️  ~/.gitconfig 已存在但未包含 shared config include"
+    echo "   请手动添加到文件头部："
+    echo "   [include]"
+    echo "       path = ~/.config/git/config-shared"
+  else
+    echo "✅ ~/.gitconfig 已包含 shared config include"
+  fi
 }
 
 # ==============================================================================

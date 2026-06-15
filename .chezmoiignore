@@ -11,3 +11,4 @@ AGENTS.md
 scripts/
 docs/
 .zshrc
+.gitconfig
