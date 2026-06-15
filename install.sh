@@ -363,6 +363,40 @@ _install_shell() {
   echo "🔗 部署 dotfiles..."
   chezmoi init --apply --source "$REPO_DIR"
   echo "✅ dotfiles 已部署"
+
+  # Bootstrap ~/.zshrc（允许用户和第三方软件修改）
+  ZSHRC="$HOME/.zshrc"
+  
+  # shellcheck disable=SC2016
+  if [[ ! -f "$ZSHRC" ]]; then
+    echo "📝 创建 ~/.zshrc bootstrap..."
+    cat > "$ZSHRC" <<'EOF'
+# GUI environment loaders may start an interactive shell without a usable TTY.
+if [[ "${TERM:-}" == "dumb" ]] || [[ ! -t 0 && ! -t 1 ]]; then
+  return 0
+fi
+
+typeset -U path PATH fpath FPATH
+export ZSH_CONFIG_DIR="$HOME/.config/zsh"
+
+source "$ZSH_CONFIG_DIR/core.zsh"
+
+[[ -r "$ZSH_CONFIG_DIR/private/env.zsh" ]] && source "$ZSH_CONFIG_DIR/private/env.zsh"
+EOF
+  elif ! grep -qF 'source "$HOME/.config/zsh/core.zsh"' "$ZSHRC" && \
+       ! grep -qF 'source "$ZSH_CONFIG_DIR/core.zsh"' "$ZSHRC"; then
+    echo "📝 追加 core.zsh source 到 ~/.zshrc..."
+    cat >> "$ZSHRC" <<'EOF'
+
+# dotfiles core config
+typeset -U path PATH fpath FPATH
+export ZSH_CONFIG_DIR="$HOME/.config/zsh"
+source "$ZSH_CONFIG_DIR/core.zsh"
+[[ -r "$ZSH_CONFIG_DIR/private/env.zsh" ]] && source "$ZSH_CONFIG_DIR/private/env.zsh"
+EOF
+  else
+    echo "✅ ~/.zshrc 已包含 core.zsh source"
+  fi
 }
 
 # ==============================================================================
