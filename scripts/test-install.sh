@@ -35,17 +35,6 @@ check_via_mise() {
     fi
 }
 
-check_directory() {
-    local dir=$1
-    if [[ -d "$dir" ]]; then
-        log_info "✓ Directory exists: $dir"
-        return 0
-    else
-        log_error "✗ Directory NOT found: $dir"
-        return 1
-    fi
-}
-
 check_file() {
     local file=$1
     if [[ -f "$file" ]]; then
@@ -86,7 +75,7 @@ main() {
         exit 1
     fi
 
-    export PATH="$HOME/.local/bin:$PATH"
+    export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$HOME/.local/share/pnpm/bin:$HOME/Library/pnpm:$PATH"
 
     log_info "Verifying installation results..."
     local failed=0
@@ -95,18 +84,18 @@ main() {
 
     if [[ "$os" == "Darwin" ]]; then
         log_info "Checking Homebrew binary (macOS)..."
-        check_command brew || ((failed++))
+        check_command brew || ((failed += 1))
 
         log_info "Checking mise binary..."
-        check_command mise || ((failed++))
+        check_command mise || ((failed += 1))
 
         log_info "Checking mise-managed tools..."
-        for tool in starship fzf zoxide fd rg gh lazygit delta nvim node go python java uv jq; do
-            check_via_mise "$tool" || ((failed++))
+        for tool in bun starship fzf zoxide yazi fd rg gh lazygit delta nvim node go python java uv jq claude agent-browser rtk openspec codex; do
+            check_via_mise "$tool" || ((failed += 1))
         done
 
         log_info "Checking mise config symlink..."
-        check_symlink "$HOME/.config/mise/config.toml" "$PROJECT_ROOT/mise.toml" || ((failed++))
+        check_symlink "$HOME/.config/mise/config.toml" "$PROJECT_ROOT/mise.toml" || ((failed += 1))
 
         log_info "Checking macOS fonts..."
         if ls "$HOME/Library/Fonts"/MapleMono-NF-CN-*.ttf >/dev/null 2>&1; then
@@ -122,43 +111,46 @@ main() {
     else
         log_info "Checking apt-installed base tools (Linux)..."
         for cmd in git curl wget vim zsh zip unzip tree htop jq; do
-            check_command "$cmd" || ((failed++))
+            check_command "$cmd" || ((failed += 1))
         done
 
         log_info "Checking mise binary..."
-        check_command mise || ((failed++))
+        check_command mise || ((failed += 1))
 
         log_info "Checking mise-managed tools..."
-        for tool in starship fzf zoxide fd rg gh lazygit delta nvim node go python uv jq; do
-            check_via_mise "$tool" || ((failed++))
+        for tool in bun starship fzf zoxide yazi fd rg gh lazygit delta nvim node go python java uv jq claude agent-browser rtk openspec codex; do
+            check_via_mise "$tool" || ((failed += 1))
         done
 
         log_info "Checking mise config symlink..."
-        check_symlink "$HOME/.config/mise/config.toml" "$PROJECT_ROOT/mise.toml" || ((failed++))
+        check_symlink "$HOME/.config/mise/config.toml" "$PROJECT_ROOT/mise.toml" || ((failed += 1))
     fi
 
     log_info "Checking chezmoi-deployed dotfiles..."
-    check_file "$HOME/.zshrc" || ((failed++))
-    check_file "$HOME/.zshenv" || ((failed++))
-    check_file "$HOME/.zprofile" || ((failed++))
-    check_file "$HOME/.gitconfig" || ((failed++))
-    check_file "$HOME/.config/zsh/core.zsh" || ((failed++))
-    check_file "$HOME/.config/starship.toml" || ((failed++))
+    check_file "$HOME/.zshrc" || ((failed += 1))
+    check_file "$HOME/.zshenv" || ((failed += 1))
+    check_file "$HOME/.zprofile" || ((failed += 1))
+    check_file "$HOME/.gitconfig" || ((failed += 1))
+    check_file "$HOME/.config/zsh/core.zsh" || ((failed += 1))
+    check_file "$HOME/.config/starship.toml" || ((failed += 1))
 
     log_info "Checking .agents symlink..."
-    check_symlink "$HOME/.agents" "$PROJECT_ROOT/.agents" || ((failed++))
+    check_symlink "$HOME/.agents" "$PROJECT_ROOT/.agents" || ((failed += 1))
 
-    log_info "Checking optional tools..."
-    if [[ -d "$HOME/.bun" ]]; then
-        log_info "✓ Bun installed"
-    else
-        log_warn "⚠ Bun not installed (optional)"
-    fi
-
+    log_info "Checking additional package managers..."
     if command -v pnpm >/dev/null 2>&1; then
         log_info "✓ pnpm installed"
     else
-        log_warn "⚠ pnpm not installed (optional)"
+        log_error "✗ pnpm is NOT installed"
+        ((failed += 1))
+    fi
+
+    log_info "Checking Zsh and mise behavior..."
+    if "$PROJECT_ROOT/scripts/test-shell.sh"; then
+        log_info "✓ Zsh and mise behavior passed"
+    else
+        log_error "✗ Zsh and mise behavior failed"
+        ((failed += 1))
     fi
 
     echo ""

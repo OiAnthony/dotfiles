@@ -7,5 +7,6 @@ Makefile
 Dockerfile
 .dockerignore
 IMPLEMENTATION.md
+AGENTS.md
 scripts/
 docs/

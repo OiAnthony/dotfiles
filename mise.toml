@@ -38,6 +38,10 @@ rtk = "latest"
 
 # Spec-driven development
 "npm:@fission-ai/openspec" = "latest"
+codex = "latest"
+herdr = "latest"
+opencode = "latest"
+pi = "latest"
 
 [settings]
 # Trust this config when symlinked into ~/.config/mise/config.toml.

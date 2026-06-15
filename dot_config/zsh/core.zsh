@@ -35,15 +35,15 @@ export CLICOLOR=1
 export LSCOLORS="gxfxcxdxbxegedabagacad"
 
 # Personal tools
-alias docker='podman'
+if command -v podman >/dev/null 2>&1 && ! command -v docker >/dev/null 2>&1; then
+  alias docker='podman'
+fi
 alias python='python3'
 alias pip='pip3'
-alias oc='opencode'
 alias lg='lazygit'
+alias oc='opencode'
 alias cc='claude --dangerously-skip-permissions'
-alias cc-yolo='claude --dangerously-skip-permissions'
 alias cx='codex --dangerously-bypass-approvals-and-sandbox'
-(( $+commands[code-insiders] )) && alias code='code-insiders'
 alias lc='lzc-cli'
 
 # Files and navigation
@@ -199,15 +199,47 @@ typeset -U path PATH
 
 export PNPM_HOME="$HOME/Library/pnpm"
 export BUN_INSTALL="$HOME/.bun"
-export ANDROID_HOME="$HOME/Library/Android/sdk"
+
+# Android SDK - auto-detect from env, common locations, or adb on PATH
+typeset -g _android_home="${ANDROID_HOME:-}"
+if [[ -z "$_android_home" ]]; then
+  local _candidates=(
+    "$HOME/Library/Android/sdk"   # macOS default
+    "$HOME/Android/Sdk"           # Linux default
+  )
+  for _dir in "$_candidates[@]"; do
+    if [[ -d "$_dir/platform-tools" ]]; then
+      _android_home="$_dir"
+      break
+    fi
+  done
+fi
+if [[ -z "$_android_home" ]]; then
+  local _adb="$(command -v adb 2>/dev/null)"
+  if [[ -n "$_adb" ]]; then
+    _android_home="${_adb:h:h}"   # adb lives in platform-tools/, one level up
+  fi
+fi
+
+if [[ -n "$_android_home" && -d "$_android_home/platform-tools" ]]; then
+  export ANDROID_HOME="$_android_home"
+  local bt_dir="${_android_home}/build-tools"
+  local bt_ver=""
+  if [[ -d "$bt_dir" ]]; then
+    bt_ver="$(command ls -1 "$bt_dir" 2>/dev/null | sort -V | tail -1)"
+  fi
+  local ct_dir="${_android_home}/cmdline-tools/latest/bin"
+  local android_paths=("${_android_home}/platform-tools")
+  [[ -d "$ct_dir" ]] && android_paths=("$ct_dir" $android_paths)
+  [[ -n "$bt_ver" ]] && android_paths+=("$bt_dir/$bt_ver")
+  path=(
+    $android_paths
+    $path
+  )
+fi
+unset _android_home
 
 path=(
-  "$HOME/.git-ai/bin"
-  "$HOME/.codeium/windsurf/bin"
-  "$HOME/.lmstudio/bin"
-  "$ANDROID_HOME/cmdline-tools/latest/bin"
-  "$ANDROID_HOME/platform-tools"
-  "$ANDROID_HOME/build-tools/36.1.0"
   "$HOME/go/bin"
   $path
 )

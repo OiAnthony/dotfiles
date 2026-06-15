@@ -4,14 +4,25 @@ FROM ubuntu:24.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
+    build-essential \
     curl \
     git \
     sudo \
     ca-certificates \
+    htop \
+    jq \
     locales \
     file \
     procps \
+    tree \
+    unzip \
+    vim \
+    wget \
+    zip \
+    zsh \
     && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y time && rm -rf /var/lib/apt/lists/*
 
 RUN locale-gen en_US.UTF-8
 ENV LANG=en_US.UTF-8 \

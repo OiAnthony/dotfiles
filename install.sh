@@ -93,6 +93,7 @@ _ensure_sudo() {
   fi
   echo "⚠️  检测到非交互式环境，尝试通过终端获取 sudo 权限..."
   if exec 3</dev/tty 2>/dev/null; then
+    # shellcheck disable=SC2024
     sudo -v < /dev/tty
     exec 3<&-
     return 0
@@ -139,12 +140,18 @@ _install_mise() {
     echo "✅ mise 已安装"
   fi
 
-  export PATH="$HOME/.local/bin:$PATH"
+  export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
 
   if ! command -v mise &>/dev/null; then
     echo "❌ mise 安装失败或不在 PATH ($HOME/.local/bin) 中，无法继续。"
     exit 1
   fi
+
+  echo "📦 通过 mise 安装 Bun..."
+  (cd "$HOME" && mise use -g bun@latest) || {
+    echo "❌ Bun 安装失败，无法继续安装 mise npm 工具。"
+    exit 1
+  }
 
   mkdir -p "$HOME/.config/mise"
   ln -sf "$REPO_DIR/mise.toml" "$HOME/.config/mise/config.toml"
@@ -195,6 +202,15 @@ _install_base_linux() {
   local pkgs=(git curl wget vim zsh zip unzip tree htop jq build-essential ca-certificates)
   local sudo_cmd=""
   [[ "$EUID" -ne 0 ]] && sudo_cmd="sudo"
+
+  local cmd
+  for cmd in git curl wget vim zsh zip unzip tree htop jq make gcc; do
+    command -v "$cmd" &>/dev/null || break
+  done
+  if [[ "$cmd" == "gcc" ]] && command -v gcc &>/dev/null; then
+    echo "✅ Linux 基础工具已安装"
+    return 0
+  fi
 
   if command -v apt-get &>/dev/null; then
     echo "📦 使用 apt-get 安装基础工具..."
@@ -296,12 +312,12 @@ _install_tools() {
     exit 1
   fi
 
-  # Bun（双平台）
-  if ! command -v bun &> /dev/null; then
-    echo "📦 安装 Bun..."
-    curl -fsSL https://bun.sh/install | bash
+  if [[ "$CURRENT_OS" == "Darwin" ]]; then
+    export PNPM_HOME="$HOME/Library/pnpm"
+    export PATH="$PNPM_HOME:$PATH"
   else
-    echo "✅ Bun 已安装"
+    export PNPM_HOME="$HOME/.local/share/pnpm"
+    export PATH="$PNPM_HOME/bin:$PATH"
   fi
 
   # pnpm（双平台）
