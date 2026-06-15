@@ -20,7 +20,7 @@
 	defaultBranch = main
 
 [pull]
-	rebase = false
+	rebase = true
 
 [alias]
 	st = status
