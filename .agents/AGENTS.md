@@ -134,57 +134,10 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 - Use `gh` for GitHub-related operations (issues, PRs, repos, workflows, API requests).
 
-## Git: nowledge-mem Skills 不提交
-
-`.agents/skills/` 目录中，受 [nowledge-mem](https://github.com/nowledge) 管理的 skill 以软链接形式存在（指向 `ai-now/skills-active/`）。真实目录 skill 是本地直接安装的。
-
-- 软链接 skill = nowledge-mem 管理 → **不提交**
-- 真实目录 skill = 本地安装 → 按需提交
-- `.agents/.skill-lock.json` 和 `.agents/skills/.nowledge-mem` 本身也不应提交
-- 提交前用 `find . -type l` 检查软链接，排除它们及其关联的 git 删除记录
-
 ## RTK - Rust Token Killer
 
-@./.agents/RTK.md
+@~/.agents/RTK.md
 
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
-
-## Project Conventions
-
-### Repo Shape
-
-- `install.sh` is the installer entrypoint. Supports modular modes: default (full), `--tools`, `--shell`, `--agents`. Handles platform split, clones/updates the repo, installs mise + tools, applies chezmoi dotfiles, links AI agent config, and configures Claude Code.
-- `mise.toml` is symlinked to `~/.config/mise/config.toml`. Editing it changes the user's global mise config.
-- `.agents/` contains AI coding guidelines (`AGENTS.md`), skill modules (`skills/`), MCP server config (`mcp.json`), and RTK config. Symlinked from `~/.agents`.
-- `dot_zshrc`, `dot_zshenv`, `dot_zprofile`, `dot_gitconfig`, `dot_config/`, `dot_local/` are chezmoi-managed dotfiles deployed to `~/` via `chezmoi apply`.
-- `.chezmoiscripts/` generates tool integration caches (fzf, zoxide, starship, zcompdump) on `chezmoi apply`.
-- `scripts/test-install.sh` and `scripts/test-idempotent.sh` are the executable spec for install behavior. If installer behavior changes, update tests in the same change.
-
-### Verified Commands
-
-- `make lint` runs `shellcheck install.sh`.
-- `make test`, `make test-idempotent`, and `make test-root` all depend on `make build` and require `docker` or `podman`.
-- `make test-all` runs `lint -> test -> test-idempotent -> test-root`.
-- For non-interactive verification of `install.sh`, set `CI=true` or `DOTFILES_NO_EXEC=1`.
-
-### Chezmoi Conventions
-
-- Zsh configuration is hand-written and deliberately minimal. Prefer one shared `core.zsh` over splitting by category.
-- Do not make the dotfiles runtime depend on app-managed or generated shell configuration (e.g. Oh My Zsh, Kaku integration files).
-- chezmoi externals (`.chezmoiexternal.toml`) manage zsh plugins. Other tools should be managed by mise, not chezmoi externals.
-- `chezmoi apply` regenerates shell integration scripts and Zsh completion cache. Shell startup reads pre-generated files only.
-
-### Platform Gotchas
-
-- macOS blocks `root` and installs Homebrew itself plus `mise` and fonts. Linux explicitly supports `root` and installs base packages via the system package manager before `mise`.
-- In tests, mise-managed tools may not be on bare `PATH`; verify them with `mise which <tool>` like `scripts/test-install.sh` does, not only `command -v`.
-- Prefer `aqua:` or `ubi:` entries in `mise.toml`. After editing `mise.toml`, run `mise install`.
-- Pinned runtimes in `mise.toml`: Node lts, Go latest, Python 3.14, Java 21, uv latest. Bun and pnpm are installed by `install.sh` via their official scripts, not mise.
-
-### Writing Conventions
-
-- User-facing docs use Simplified Chinese.
-- Code comments use Simplified Chinese.
-- Git commit messages use English Conventional Commits.
