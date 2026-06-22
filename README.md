@@ -89,7 +89,7 @@ curl -fsSL https://raw.githubusercontent.com/OiAnthony/dotfiles/main/install.sh 
 
 ```bash
 chezmoi edit ~/.config/zsh/core.zsh
-chezmoi diff
+chezmoi diff --exclude scripts
 chezmoi apply
 ```
 
@@ -104,7 +104,7 @@ bunx skills add <owner/repo>
 ## 日常使用
 
 ```bash
-chezmoi diff
+chezmoi diff --exclude scripts
 chezmoi apply
 chezmoi cd    # 进入仓库目录
 ```
@@ -146,7 +146,7 @@ dotfiles/
 │   └── RTK.md
 ├── .chezmoi.toml.tmpl           # chezmoi 配置
 ├── .chezmoiexternal.toml        # chezmoi 外部依赖
-├── .chezmoiscripts/             # 生成脚本（fzf/zoxide/starship 缓存）
+├── .chezmoiscripts/             # 生成脚本（Shell 集成 + Zsh 补全缓存）
 ├── dot_zshrc / dot_zshenv / dot_zprofile  # Zsh 入口
 ├── dot_gitconfig                # Git 配置
 ├── dot_config/                  # ~/.config/ 映射
