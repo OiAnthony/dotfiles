@@ -1,4 +1,8 @@
-# dotfiles
+<p align="center">
+  <img src="https://r2.unono.app/2026/05/823f369a1d565f9b9f2918c4e02837eb.png" alt="dev-setup" width="600" />
+</p>
+
+<h1 align="center">dotfiles</h1>
 
 <p align="center">
   <strong>一行命令，任何机器复现你的开发环境 + AI 编码配置</strong>
