@@ -83,23 +83,20 @@ _ensure_sudo() {
     return 0
   fi
   if sudo -n true 2>/dev/null; then
-    echo "✅ 已有 sudo 权限"
     return 0
   fi
   if [[ -t 0 ]]; then
-    echo "🔐 需要 sudo 权限以安装依赖并配置默认 Shell..."
+    echo "  sudo..."
     sudo -v
     return 0
   fi
-  echo "⚠️  检测到非交互式环境，尝试通过终端获取 sudo 权限..."
   if exec 3</dev/tty 2>/dev/null; then
     # shellcheck disable=SC2024
     sudo -v < /dev/tty
     exec 3<&-
     return 0
   fi
-  echo "❌ 无法获取 sudo 权限（无终端且无免密 sudo）"
-  echo "请先运行: sudo -v && curl -fsSL https://raw.githubusercontent.com/OiAnthony/dotfiles/main/install.sh | bash"
+  echo "  sudo... FAILED (no tty, run: sudo -v first)"
   exit 1
 }
 
@@ -134,36 +131,28 @@ with open('$file', 'w') as f:
 
 _install_mise() {
   if ! command -v mise &>/dev/null; then
-    echo "📦 安装 mise..."
-    curl -fsSL https://mise.run | sh
-  else
-    echo "✅ mise 已安装"
+    curl -fsSL https://mise.run | sh >/dev/null 2>&1
   fi
 
   export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$PATH"
 
   if ! command -v mise &>/dev/null; then
-    echo "❌ mise 安装失败或不在 PATH ($HOME/.local/bin) 中，无法继续。"
+    echo "  mise... FAILED (not in PATH: $HOME/.local/bin)"
     exit 1
   fi
 
-  echo "🔄 更新 mise 到最新版本..."
-  mise self-update || echo "⚠️  mise self-update 失败，继续使用当前版本"
-
-  echo "📦 通过 mise 安装 Bun..."
-  (cd "$HOME" && mise use -g bun@latest) || {
-    echo "❌ Bun 安装失败，无法继续安装 mise npm 工具。"
+  mise self-update -q 2>/dev/null || true
+  (cd "$HOME" && mise use -g bun@latest) >/dev/null 2>&1 || {
+    echo "  bun... FAILED"
     exit 1
   }
 
   mkdir -p "$HOME/.config/mise"
   ln -sf "$REPO_DIR/mise.toml" "$HOME/.config/mise/config.toml"
-
-  echo "📦 通过 mise 安装工具链（首次需下载，可能耗时较久）..."
-  mise install || {
-    echo "⚠️  mise install 部分失败，常见原因：网络受限、GitHub release 限流。"
-    echo "   可设置 https_proxy 或 GITHUB_TOKEN 后重新运行。"
+  mise install -q 2>/dev/null || {
+    echo "  mise install... partial (网络受限或限流，可设 https_proxy / GITHUB_TOKEN 重试)"
   }
+  echo "  mise + Bun + 工具链... ok"
 }
 
 _install_fonts_macos() {
@@ -171,33 +160,27 @@ _install_fonts_macos() {
   mkdir -p "$font_dir"
 
   if ! ls "$font_dir"/MapleMono-NF-CN-*.ttf >/dev/null 2>&1; then
-    echo "📦 下载 Maple Mono NF CN..."
     local tmp; tmp=$(mktemp -d)
     if curl -fsSL -o "$tmp/maple.zip" \
         "https://github.com/subframe7536/maple-font/releases/latest/download/MapleMono-NF-CN.zip"; then
       unzip -q -o "$tmp/maple.zip" -d "$font_dir"
-      echo "✅ Maple Mono NF CN 已安装"
+      echo "  Maple Mono NF... ok"
     else
-      echo "⚠️  Maple Mono 下载失败，跳过"
+      echo "  Maple Mono NF... FAILED (download error)"
     fi
     rm -rf "$tmp"
-  else
-    echo "✅ Maple Mono NF CN 已存在"
   fi
 
   if ! ls "$font_dir"/JetBrainsMonoNerdFont-*.ttf >/dev/null 2>&1; then
-    echo "📦 下载 JetBrains Mono Nerd Font..."
     local tmp; tmp=$(mktemp -d)
     if curl -fsSL -o "$tmp/jb.zip" \
         "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip"; then
       unzip -q -o "$tmp/jb.zip" -d "$font_dir"
-      echo "✅ JetBrains Mono Nerd Font 已安装"
+      echo "  JetBrains Mono NF... ok"
     else
-      echo "⚠️  JetBrains Mono 下载失败，跳过"
+      echo "  JetBrains Mono NF... FAILED (download error)"
     fi
     rm -rf "$tmp"
-  else
-    echo "✅ JetBrains Mono Nerd Font 已存在"
   fi
 }
 
@@ -211,47 +194,41 @@ _install_base_linux() {
     command -v "$cmd" &>/dev/null || break
   done
   if [[ "$cmd" == "gcc" ]] && command -v gcc &>/dev/null; then
-    echo "✅ Linux 基础工具已安装"
     return 0
   fi
 
+  echo "  Linux 基础工具..."
   if command -v apt-get &>/dev/null; then
-    echo "📦 使用 apt-get 安装基础工具..."
-    $sudo_cmd apt-get update -y
-    $sudo_cmd apt-get install -y "${pkgs[@]}"
+    $sudo_cmd apt-get update -y >/dev/null 2>&1
+    $sudo_cmd apt-get install -y "${pkgs[@]}" >/dev/null 2>&1
   elif command -v dnf &>/dev/null; then
-    echo "📦 使用 dnf 安装基础工具..."
-    $sudo_cmd dnf install -y git curl wget vim zsh zip unzip tree htop jq ca-certificates
-    $sudo_cmd dnf groupinstall -y "Development Tools" || true
+    $sudo_cmd dnf install -y git curl wget vim zsh zip unzip tree htop jq ca-certificates >/dev/null 2>&1
+    $sudo_cmd dnf groupinstall -y "Development Tools" >/dev/null 2>&1 || true
   elif command -v yum &>/dev/null; then
-    echo "📦 使用 yum 安装基础工具..."
-    $sudo_cmd yum install -y git curl wget vim zsh zip unzip tree htop jq ca-certificates
-    $sudo_cmd yum groupinstall -y "Development Tools" || true
+    $sudo_cmd yum install -y git curl wget vim zsh zip unzip tree htop jq ca-certificates >/dev/null 2>&1
+    $sudo_cmd yum groupinstall -y "Development Tools" >/dev/null 2>&1 || true
   elif command -v pacman &>/dev/null; then
-    echo "📦 使用 pacman 安装基础工具..."
-    $sudo_cmd pacman -Sy --noconfirm git curl wget vim zsh zip unzip tree htop jq base-devel ca-certificates
+    $sudo_cmd pacman -Sy --noconfirm git curl wget vim zsh zip unzip tree htop jq base-devel ca-certificates >/dev/null 2>&1
   elif command -v apk &>/dev/null; then
-    echo "📦 使用 apk 安装基础工具..."
-    $sudo_cmd apk add --no-cache git curl wget vim zsh zip unzip tree htop jq build-base ca-certificates
+    $sudo_cmd apk add --no-cache git curl wget vim zsh zip unzip tree htop jq build-base ca-certificates >/dev/null 2>&1
   else
-    echo "❌ 未识别的 Linux 发行版包管理器。"
-    echo "   请手动安装: ${pkgs[*]}，然后重新运行此脚本。"
+    echo "  Linux 基础工具... FAILED (unknown distro)"
     return 1
   fi
+  echo "  Linux 基础工具... ok"
 }
 
 _configure_default_shell() {
   local current_shell
   current_shell="$(basename "$SHELL")"
   if [[ "$current_shell" == "zsh" ]]; then
-    echo "✅ Zsh 已是默认 Shell"
     return 0
   fi
 
   local zsh_path
   zsh_path="$(command -v zsh)"
   if [[ -z "$zsh_path" ]]; then
-    echo "⚠️  未找到 zsh，跳过默认 shell 切换"
+    echo "  Zsh 默认 Shell... skip (zsh not found)"
     return 0
   fi
 
@@ -263,19 +240,18 @@ _configure_default_shell() {
   fi
 
   if [[ -f /etc/shells ]] && ! grep -qxF "$zsh_path" /etc/shells; then
-    echo "📝 将 $zsh_path 添加到 /etc/shells..."
     echo "$zsh_path" | $sudo_cmd tee -a /etc/shells >/dev/null
   fi
 
   if [[ -n "$sudo_cmd" ]] && $sudo_cmd chsh -s "$zsh_path" "$(id -un)" 2>/dev/null; then
-    echo "✅ 默认 Shell 已切换为 $zsh_path（下次登录生效）"
+    echo "  Zsh 默认 Shell... ok"
   elif chsh -s "$zsh_path" 2>/dev/null; then
-    echo "✅ 默认 Shell 已切换为 $zsh_path（下次登录生效）"
+    echo "  Zsh 默认 Shell... ok"
   elif command -v usermod &>/dev/null; then
     $sudo_cmd usermod -s "$zsh_path" "$(id -un)" && \
-      echo "✅ 默认 Shell 已切换为 $zsh_path（通过 usermod，下次登录生效）"
+      echo "  Zsh 默认 Shell... ok"
   else
-    echo "⚠️  无法切换默认 Shell，请手动执行: chsh -s $zsh_path"
+    echo "  Zsh 默认 Shell... FAILED (run: chsh -s $zsh_path)"
   fi
 }
 
@@ -285,20 +261,19 @@ _configure_default_shell() {
 _install_tools() {
   $INSTALL_TOOLS || return 0
   echo ""
-  echo "━━━ 工具链安装 ━━━"
+  echo "── 工具链"
 
   if [[ "$CURRENT_OS" == "Darwin" ]]; then
     _configure_default_shell
 
     if ! command -v brew &> /dev/null; then
-      echo "📦 安装 Homebrew（仅本体，工具链由 mise 管理）..."
+      echo "  Homebrew..."
       _ensure_sudo
-      NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+      NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" >/dev/null 2>&1
       if [[ -f "/opt/homebrew/bin/brew" ]]; then
         eval "$(/opt/homebrew/bin/brew shellenv)"
       fi
-    else
-      echo "✅ Homebrew 已安装"
+      echo "  Homebrew... ok"
     fi
 
     _install_mise
@@ -307,11 +282,10 @@ _install_tools() {
   elif [[ "$CURRENT_OS" == "Linux" ]]; then
     _install_base_linux
     _configure_default_shell
-
     _install_mise
 
   else
-    echo "❌ 不支持的操作系统: $CURRENT_OS"
+    echo "  OS... skip: $CURRENT_OS 不受支持"
     exit 1
   fi
 
@@ -323,21 +297,16 @@ _install_tools() {
     export PATH="$PNPM_HOME/bin:$PATH"
   fi
 
-  # pnpm（双平台）
   if ! command -v pnpm &> /dev/null; then
-    echo "📦 安装 pnpm..."
     PNPM_INSTALL_SHELL="${SHELL:-$(command -v zsh || command -v bash || echo /bin/sh)}"
-    curl -fsSL https://get.pnpm.io/install.sh | env SHELL="$PNPM_INSTALL_SHELL" sh -
-  else
-    echo "✅ pnpm 已安装"
+    curl -fsSL https://get.pnpm.io/install.sh | env SHELL="$PNPM_INSTALL_SHELL" sh - >/dev/null 2>&1
+    echo "  pnpm... ok"
   fi
 
-  # Claude Code 配置
-  echo "🔧 配置 Claude Code..."
-  _ensure_json_key "$HOME/.claude.json" "hasCompletedOnboarding" "true" && \
-    echo "✅ ~/.claude.json 已就绪"
-  _ensure_json_key "$HOME/.claude/config.json" "primaryApiKey" '"any"' && \
-    echo "✅ ~/.claude/config.json 已就绪"
+  echo "  Claude Code 配置..."
+  _ensure_json_key "$HOME/.claude.json" "hasCompletedOnboarding" "true"
+  _ensure_json_key "$HOME/.claude/config.json" "primaryApiKey" '"any"'
+  echo "  Claude Code 配置... ok"
 }
 
 # ==============================================================================
@@ -346,33 +315,28 @@ _install_tools() {
 _install_shell() {
   $INSTALL_SHELL || return 0
   echo ""
-  echo "━━━ Shell 配置 ━━━"
+  echo "── Shell"
 
-  # 安装 chezmoi
   if ! command -v chezmoi &>/dev/null; then
-    echo "📦 安装 chezmoi..."
-    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin"
+    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b "$HOME/.local/bin" >/dev/null 2>&1
     export PATH="$HOME/.local/bin:$PATH"
-  else
-    echo "✅ chezmoi 已安装"
+    echo "  chezmoi... ok"
   fi
 
   if ! command -v chezmoi &>/dev/null; then
-    echo "❌ chezmoi 安装失败，跳过 Shell 配置。"
+    echo "  chezmoi... FAILED"
     return 1
   fi
 
-  # 部署 dotfiles
-  echo "🔗 部署 dotfiles..."
-  chezmoi init --apply --source "$REPO_DIR"
-  echo "✅ dotfiles 已部署"
+  echo "  dotfiles 部署..."
+  chezmoi init --apply --source "$REPO_DIR" >/dev/null 2>&1
+  echo "  dotfiles 部署... ok"
 
-  # Bootstrap ~/.zshrc（允许用户和第三方软件修改）
   ZSHRC="$HOME/.zshrc"
-  
+
   # shellcheck disable=SC2016
   if [[ ! -f "$ZSHRC" ]]; then
-    echo "📝 创建 ~/.zshrc bootstrap..."
+    echo "  ~/.zshrc..."
     cat > "$ZSHRC" <<'EOF'
 # GUI environment loaders may start an interactive shell without a usable TTY.
 if [[ "${TERM:-}" == "dumb" ]] || [[ ! -t 0 && ! -t 1 ]]; then
@@ -386,9 +350,10 @@ source "$ZSH_CONFIG_DIR/core.zsh"
 
 [[ -r "$ZSH_CONFIG_DIR/private/env.zsh" ]] && source "$ZSH_CONFIG_DIR/private/env.zsh"
 EOF
+    echo "  ~/.zshrc... ok"
   elif ! grep -qF 'source "$HOME/.config/zsh/core.zsh"' "$ZSHRC" && \
        ! grep -qF 'source "$ZSH_CONFIG_DIR/core.zsh"' "$ZSHRC"; then
-    echo "📝 追加 core.zsh source 到 ~/.zshrc..."
+    echo "  ~/.zshrc (追加)..."
     cat >> "$ZSHRC" <<'EOF'
 
 # dotfiles core config
@@ -397,15 +362,13 @@ export ZSH_CONFIG_DIR="$HOME/.config/zsh"
 source "$ZSH_CONFIG_DIR/core.zsh"
 [[ -r "$ZSH_CONFIG_DIR/private/env.zsh" ]] && source "$ZSH_CONFIG_DIR/private/env.zsh"
 EOF
-  else
-    echo "✅ ~/.zshrc 已包含 core.zsh source"
+    echo "  ~/.zshrc (追加)... ok"
   fi
 
-  # Bootstrap ~/.gitconfig（允许用户修改）
   GITCONFIG="$HOME/.gitconfig"
-  
+
   if [[ ! -f "$GITCONFIG" ]]; then
-    echo "📝 创建 ~/.gitconfig bootstrap..."
+    echo "  ~/.gitconfig..."
     cat > "$GITCONFIG" <<'EOF'
 [include]
 	path = ~/.config/git/config-shared
@@ -414,13 +377,9 @@ EOF
 	name = YOUR_NAME
 	email = YOUR_EMAIL
 EOF
+    echo "  ~/.gitconfig... ok"
   elif ! grep -qF '[include]' "$GITCONFIG" || ! grep -qF 'path = ~/.config/git/config-shared' "$GITCONFIG"; then
-    echo "⚠️  ~/.gitconfig 已存在但未包含 shared config include"
-    echo "   请手动添加到文件头部："
-    echo "   [include]"
-    echo "       path = ~/.config/git/config-shared"
-  else
-    echo "✅ ~/.gitconfig 已包含 shared config include"
+    echo "  ~/.gitconfig... skip (已存在但无 shared include, 请手动添加)"
   fi
 }
 
@@ -430,37 +389,31 @@ EOF
 _install_agents() {
   $INSTALL_AGENTS || return 0
   echo ""
-  echo "━━━ AI 配置 ━━━"
+  echo "── AI 配置"
 
-  # symlink ~/.agents → repo/.agents
   if [[ -L "$HOME/.agents" ]] || [[ ! -e "$HOME/.agents" ]]; then
     ln -sfn "$REPO_DIR/.agents" "$HOME/.agents"
-    echo "✅ ~/.agents → $REPO_DIR/.agents"
+    echo "  ~/.agents symlink... ok"
   else
-    echo "⚠️  ~/.agents 已存在且不是软链接，跳过。"
+    echo "  ~/.agents symlink... skip (已存在且非 symlink)"
   fi
 
-  # RTK global hook
   if command -v rtk &>/dev/null; then
-    rtk init --global --hook-only --auto-patch && echo "✅ RTK global hook 已初始化" || true
+    rtk init --global --hook-only --auto-patch >/dev/null 2>&1 && \
+      echo "  RTK hook... ok" || echo "  RTK hook... FAILED"
   else
-    echo "⚠️  rtk 未安装（可用 --tools 安装），跳过 RTK hook。"
-    echo "   安装后请运行: rtk init --global --hook-only --auto-patch"
+    echo "  RTK hook... skip (rtk not installed)"
   fi
 
-  # Delegate per-client symlink topology to @oipsanthony/dotagents.
-  # Requires bunx (provided by mise's bun); missing bunx degrades gracefully.
   if command -v bunx &>/dev/null; then
-    echo "🔗 委托 dotagents 建立 9 个客户端 symlink..."
-    if bunx @oipsanthony/dotagents@latest --scope global --clients all --yes --force; then
-      echo "✅ dotagents 客户端 symlink 已就绪"
+    echo "  dotagents: 9 个 AI Agent symlink..."
+    if bunx @oipsanthony/dotagents@latest --scope global --clients all --yes --force >/dev/null 2>&1; then
+      echo "  dotagents: 9 个 AI Agent symlink... ok"
     else
-      echo "⚠️  dotagents 执行失败，客户端 symlink 保持未托管状态。"
-      echo "   可稍后手动运行: bunx @oipsanthony/dotagents"
+      echo "  dotagents: 9 个 AI Agent symlink... FAILED"
     fi
   else
-    echo "⚠️  bunx 不可用（需 mise 安装 bun），跳过 dotagents 客户端 symlink。"
-    echo "   安装后请运行: bunx @oipsanthony/dotagents --scope global --clients all --yes --force"
+    echo "  dotagents: 9 个 AI Agent symlink... skip (bunx not available)"
   fi
 }
 
