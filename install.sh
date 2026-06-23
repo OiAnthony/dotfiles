@@ -142,13 +142,25 @@ _install_mise() {
   fi
 
   mise self-update -q 2>/dev/null || true
+
+  mkdir -p "$HOME/.config/mise"
+  local mise_cfg="$HOME/.config/mise/config.toml"
+  # Never silently destroy a hand-written mise config. If a config already
+  # exists and is not a symlink to this repo's mise.toml, back it up first.
+  if [[ -e "$mise_cfg" || -L "$mise_cfg" ]] && \
+     [[ "$(readlink "$mise_cfg" 2>/dev/null)" != "$REPO_DIR/mise.toml" ]]; then
+    local bkp_dir
+    bkp_dir="$HOME/.dotfiles-backup/$(date -u +%Y%m%dT%H%M%SZ)"
+    mkdir -p "$bkp_dir"
+    mv "$mise_cfg" "$bkp_dir/config.toml"
+    echo "  mise config backed up → $bkp_dir/config.toml"
+  fi
+  ln -sf "$REPO_DIR/mise.toml" "$mise_cfg"
+
   (cd "$HOME" && mise use -g bun@latest) >/dev/null 2>&1 || {
     echo "  bun... FAILED"
     exit 1
   }
-
-  mkdir -p "$HOME/.config/mise"
-  ln -sf "$REPO_DIR/mise.toml" "$HOME/.config/mise/config.toml"
   mise install -q 2>/dev/null || {
     echo "  mise install... partial (网络受限或限流，可设 https_proxy / GITHUB_TOKEN 重试)"
   }

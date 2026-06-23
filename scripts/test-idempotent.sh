@@ -110,6 +110,44 @@ main() {
         ((failed += 1))
     fi
 
+    log_info "Verifying mise config backup-then-symlink behavior..."
+    # Simulate a hand-written mise config that must NOT be silently destroyed:
+    # replace the repo symlink with a real file, re-run install.sh, and assert
+    # the file was moved to ~/.dotfiles-backup/ instead of overwritten.
+    local user_mise="$HOME/.config/mise/config.toml"
+    rm -f "$user_mise"
+    echo "# my custom mise config" > "$user_mise"
+    local user_mise_md5
+    user_mise_md5=$(md5sum "$user_mise" | awk '{print $1}')
+
+    if ./install.sh >/dev/null 2>&1; then
+        :
+    else
+        log_error "✗ Third run (mise backup) failed"
+        ((failed += 1))
+    fi
+
+    if [[ -L "$user_mise" ]]; then
+        log_info "✓ mise config re-symlinked after backup"
+    else
+        log_error "✗ mise config not a symlink after backup"
+        ((failed += 1))
+    fi
+
+    local found_backup=0
+    while IFS= read -r -d '' f; do
+        if [[ "$(md5sum "$f" | awk '{print $1}')" == "$user_mise_md5" ]]; then
+            found_backup=1
+            break
+        fi
+    done < <(find "$HOME/.dotfiles-backup" -type f -print0 2>/dev/null)
+    if [[ "$found_backup" -eq 1 ]]; then
+        log_info "✓ hand-written mise config backed up intact"
+    else
+        log_error "✗ hand-written mise config was destroyed (no backup match)"
+        ((failed += 1))
+    fi
+
     echo ""
     if [[ $failed -eq 0 ]]; then
         log_info "========================================="
