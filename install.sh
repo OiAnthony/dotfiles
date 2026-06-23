@@ -444,6 +444,21 @@ _install_agents() {
     echo "⚠️  rtk 未安装（可用 --tools 安装），跳过 RTK hook。"
     echo "   安装后请运行: rtk init --global --hook-only --auto-patch"
   fi
+
+  # Delegate per-client symlink topology to @oipsanthony/dotagents.
+  # Requires bunx (provided by mise's bun); missing bunx degrades gracefully.
+  if command -v bunx &>/dev/null; then
+    echo "🔗 委托 dotagents 建立 9 个客户端 symlink..."
+    if bunx @oipsanthony/dotagents@latest --scope global --clients all --yes --force; then
+      echo "✅ dotagents 客户端 symlink 已就绪"
+    else
+      echo "⚠️  dotagents 执行失败，客户端 symlink 保持未托管状态。"
+      echo "   可稍后手动运行: bunx @oipsanthony/dotagents"
+    fi
+  else
+    echo "⚠️  bunx 不可用（需 mise 安装 bun），跳过 dotagents 客户端 symlink。"
+    echo "   安装后请运行: bunx @oipsanthony/dotagents --scope global --clients all --yes --force"
+  fi
 }
 
 # ==============================================================================
@@ -451,8 +466,13 @@ _install_agents() {
 # ==============================================================================
 
 _install_tools
-_install_shell
+# Agents must run before shell: _install_agents creates the ~/.agents → repo
+# symlink that dotagents uses as its source, and _install_shell's chezmoi apply
+# triggers run_after_30-link-agents (which calls dotagents). If chezmoi apply
+# runs first, dotagents finds no ~/.agents and creates an empty real directory,
+# breaking both the top-level symlink and every client link.
 _install_agents
+_install_shell
 
 echo ""
 echo "✨ 安装完成！"
