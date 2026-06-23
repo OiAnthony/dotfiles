@@ -17,6 +17,9 @@
 # Agent hooks (auto-managed)
 .agents/hooks/
 
+# dotagents conflict backups (auto-managed, do not commit)
+.agents/backup/
+
 # System skills (auto-managed by platform)
 .agents/skills/.system/
 
@@ -33,3 +36,6 @@ __pycache__/
 *.py[codz]
 .pytest_cache/
 .ruff_cache/
+
+# OpenSpec
+openspec/

@@ -65,6 +65,32 @@ check_symlink() {
     fi
 }
 
+# Verify a dotagents-managed client symlink points through ~/.agents (relative
+# path, not an absolute repo path). Accepts both the exact relative target and
+# any relative target whose final segment matches the expected source name.
+check_agent_link() {
+    local link=$1
+    local expected=$2
+    local label=${3:-$link}
+    if [[ -L "$link" ]]; then
+        local actual_target
+        actual_target=$(readlink "$link")
+        if [[ "$actual_target" == "$expected" ]]; then
+            log_info "✓ Agent link correct: $label -> $actual_target"
+            return 0
+        fi
+        if [[ "$actual_target" == */.agents/* ]] && [[ "$actual_target" != /* ]]; then
+            log_info "✓ Agent link (relative, .agents): $label -> $actual_target"
+            return 0
+        fi
+        log_error "✗ Agent link target mismatch: $label -> $actual_target (expected: $expected)"
+        return 1
+    else
+        log_error "✗ Not a symlink: $label ($link)"
+        return 1
+    fi
+}
+
 main() {
     log_info "Running install.sh (full)..."
     cd "$PROJECT_ROOT"
@@ -136,6 +162,24 @@ main() {
 
     log_info "Checking .agents symlink..."
     check_symlink "$HOME/.agents" "$PROJECT_ROOT/.agents" || ((failed += 1))
+
+    log_info "Checking dotagents client symlinks..."
+    # dotagents links ~/.agents/<name> into each AI client dir via relative
+    # symlinks that traverse ~/.agents (not the repo path). Claude/Codex/Gemini
+    # are the canonical trio to verify in containers.
+    # Claude
+    check_agent_link "$HOME/.claude/CLAUDE.md"    "../.agents/CLAUDE.md"   "claude CLAUDE.md" || ((failed += 1))
+    check_agent_link "$HOME/.claude/commands"     "../.agents/commands"    "claude commands"  || ((failed += 1))
+    check_agent_link "$HOME/.claude/hooks"        "../.agents/hooks"       "claude hooks"     || ((failed += 1))
+    check_agent_link "$HOME/.claude/skills"       "../.agents/skills"      "claude skills"    || ((failed += 1))
+    # Codex (prompts alias)
+    check_agent_link "$HOME/.codex/AGENTS.md"     "../.agents/AGENTS.md"   "codex AGENTS.md"  || ((failed += 1))
+    check_agent_link "$HOME/.codex/prompts"       "../.agents/commands"    "codex prompts"    || ((failed += 1))
+    check_agent_link "$HOME/.codex/skills"        "../.agents/skills"      "codex skills"     || ((failed += 1))
+    # Gemini
+    check_agent_link "$HOME/.gemini/GEMINI.md"    "../.agents/AGENTS.md"   "gemini GEMINI.md" || ((failed += 1))
+    check_agent_link "$HOME/.gemini/commands"     "../.agents/commands"    "gemini commands"  || ((failed += 1))
+    check_agent_link "$HOME/.gemini/skills"       "../.agents/skills"      "gemini skills"    || ((failed += 1))
 
     log_info "Checking additional package managers..."
     if command -v pnpm >/dev/null 2>&1; then

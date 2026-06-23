@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+
+# Re-establish per-client agent symlinks via @oipsanthony/dotagents.
+# Runs after chezmoi apply so any drift in ~/.agents is propagated to the
+# 9 AI client directories. Non-interactive: --yes skips prompts, --force
+# overwrites conflicts (backed up first). Requires bunx (mise bun).
+
+PATH="${HOME}/.local/share/mise/shims:${HOME}/.bun/bin:${HOME}/.local/bin:/opt/homebrew/bin:/usr/bin:/bin"
+export PATH
+
+if ! command -v bunx >/dev/null 2>&1; then
+  echo "skip: bunx not on PATH (mise bun not installed); dotagents symlinks left untouched"
+  exit 0
+fi
+
+bunx @oipsanthony/dotagents@latest --scope global --clients all --yes --force
