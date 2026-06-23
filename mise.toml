@@ -27,21 +27,21 @@ uv = "latest"
 "aqua:jqlang/jq" = "latest"
 "aqua:neovim/neovim" = "latest"
 # Git tooling
-"aqua:cli/cli" = "latest"               # gh
-"aqua:dandavison/delta" = "latest"      # git-delta
+"aqua:cli/cli" = "latest" # gh
+"aqua:dandavison/delta" = "latest" # git-delta
 "aqua:jesseduffield/lazygit" = "latest"
 
 # AI
 "aqua:anthropics/claude-code" = "latest"
-"npm:agent-browser" = "latest"
+codex = "latest"
+opencode = "latest"
+pi = "latest"
 rtk = "latest"
+herdr = "latest"
+"npm:agent-browser" = "latest"
 
 # Spec-driven development
 "npm:@fission-ai/openspec" = "latest"
-codex = "latest"
-herdr = "latest"
-opencode = "latest"
-pi = "latest"
 
 [settings]
 # Trust this config when symlinked into ~/.config/mise/config.toml.
