@@ -123,7 +123,7 @@ _ensure_json_key() {
 import json
 with open('$file') as f:
     data = json.load(f)
-data['$key'] = $value
+data['$key'] = json.loads('$value')
 with open('$file', 'w') as f:
     json.dump(data, f, indent=2)
 "
