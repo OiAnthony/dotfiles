@@ -147,6 +147,9 @@ _install_mise() {
     exit 1
   fi
 
+  echo "🔄 更新 mise 到最新版本..."
+  mise self-update || echo "⚠️  mise self-update 失败，继续使用当前版本"
+
   echo "📦 通过 mise 安装 Bun..."
   (cd "$HOME" && mise use -g bun@latest) || {
     echo "❌ Bun 安装失败，无法继续安装 mise npm 工具。"
