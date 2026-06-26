@@ -39,3 +39,6 @@ __pycache__/
 
 # OpenSpec
 openspec/
+
+# Command Code
+.commandcode/

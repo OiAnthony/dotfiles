@@ -106,6 +106,7 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - Use Chinese for conversations, include the code review result and plan file content of plan mode.
 - Use English for all code-related content (code comments, UI strings, commit messages, PR descriptions) to ensure better internationalization and collaboration in open-source projects.
 - OpenSpec Propose artifacts (design docs, specs, task lists) must be written in Simplified Chinese.
+- Skills should output in Simplified Chinese. Professional terminology (e.g. function/class/variable names, API names, CLI commands, algorithm names) should remain in English.
 
 ## Documentation Standards
 
