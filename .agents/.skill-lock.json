@@ -225,6 +225,15 @@
       "skillFolderHash": "d9cffe56d26d4af7687299e391a7be1cfaf46c1b",
       "installedAt": "2026-07-02T03:10:28.678Z",
       "updatedAt": "2026-07-02T03:10:28.678Z"
+    },
+    "lark": {
+      "source": "OiAnthony/lark-cli-progressive-skill",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/OiAnthony/lark-cli-progressive-skill.git",
+      "skillPath": "skills/lark/SKILL.md",
+      "skillFolderHash": "e0c89ba2d393e3d10552dfef01c6287c43a3cf62",
+      "installedAt": "2026-07-13T07:06:39.696Z",
+      "updatedAt": "2026-07-15T16:16:21.744Z"
     }
   },
   "dismissed": {
