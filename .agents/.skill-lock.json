@@ -177,9 +177,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/nextlevelbuilder/ui-ux-pro-max-skill.git",
       "skillPath": ".claude/skills/ui-ux-pro-max/SKILL.md",
-      "skillFolderHash": "c2a6aa6b0d260877941fa016e3e8aa2dfaf55055",
+      "skillFolderHash": "e36b015761c3bd5e2b6977323db9b105b4cd8d5f",
       "installedAt": "2026-05-19T08:03:23.597Z",
-      "updatedAt": "2026-07-13T03:20:04.402Z"
+      "updatedAt": "2026-07-15T16:25:34.816Z"
     },
     "design-taste-frontend": {
       "source": "Leonxlnx/taste-skill",
