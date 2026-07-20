@@ -51,9 +51,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/vercel-labs/agent-browser.git",
       "skillPath": "skills/agent-browser/SKILL.md",
-      "skillFolderHash": "9b31e495b887e4ca123960415eca69fc7e1bba28",
+      "skillFolderHash": "037e8078db4b20b4aa25c04f21c6de7d335ec449",
       "installedAt": "2026-02-11T16:00:19.711Z",
-      "updatedAt": "2026-06-25T15:52:37.579Z"
+      "updatedAt": "2026-07-20T03:35:30.941Z"
     },
     "skill-creator": {
       "source": "anthropics/skills",
@@ -69,9 +69,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/tw93/Waza.git",
       "skillPath": "skills/health/SKILL.md",
-      "skillFolderHash": "8ac42f7f6943354f2284d9eba610f1ec3cc39cc4",
+      "skillFolderHash": "fb81b5bb38c4238e0899f1aadf175bf8228b1f03",
       "installedAt": "2026-03-23T05:24:29.032Z",
-      "updatedAt": "2026-07-13T03:18:29.058Z"
+      "updatedAt": "2026-07-20T03:35:33.860Z"
     },
     "git-commit": {
       "source": "github/awesome-copilot",
@@ -105,63 +105,63 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/tw93/Waza.git",
       "skillPath": "skills/check/SKILL.md",
-      "skillFolderHash": "ccf585cec77c1acb22acde46419c054c9cd169a8",
+      "skillFolderHash": "09ffc2bef7aec301da4e3a6b556e90fde4ef5340",
       "installedAt": "2026-04-07T08:10:59.117Z",
-      "updatedAt": "2026-07-13T03:18:32.298Z"
+      "updatedAt": "2026-07-20T03:35:36.398Z"
     },
     "hunt": {
       "source": "tw93/Waza",
       "sourceType": "github",
       "sourceUrl": "https://github.com/tw93/Waza.git",
       "skillPath": "skills/hunt/SKILL.md",
-      "skillFolderHash": "e72572da9e7a84ef9890b72e6201c73ad79820f8",
+      "skillFolderHash": "7282337b8e499898fcf6d949719b6de43af570b1",
       "installedAt": "2026-04-07T08:11:00.749Z",
-      "updatedAt": "2026-07-13T03:18:35.110Z"
+      "updatedAt": "2026-07-20T03:35:38.979Z"
     },
     "read": {
       "source": "tw93/Waza",
       "sourceType": "github",
       "sourceUrl": "https://github.com/tw93/Waza.git",
       "skillPath": "skills/read/SKILL.md",
-      "skillFolderHash": "e776d94178f1e3d94f954b47e9aeb67c221d9923",
+      "skillFolderHash": "99f43a1ff34a6ecb872ec74a8892606647f13779",
       "installedAt": "2026-04-07T08:11:01.804Z",
-      "updatedAt": "2026-07-13T03:18:37.782Z"
+      "updatedAt": "2026-07-20T03:35:41.581Z"
     },
     "think": {
       "source": "tw93/Waza",
       "sourceType": "github",
       "sourceUrl": "https://github.com/tw93/Waza.git",
       "skillPath": "skills/think/SKILL.md",
-      "skillFolderHash": "4e76d9da2436b058fa012645856326860a0276b1",
+      "skillFolderHash": "e5bfbf26391e0c2dba51644f6938537d8254de59",
       "installedAt": "2026-04-07T08:11:02.357Z",
-      "updatedAt": "2026-07-13T03:18:40.802Z"
+      "updatedAt": "2026-07-20T03:35:44.250Z"
     },
     "write": {
       "source": "tw93/Waza",
       "sourceType": "github",
       "sourceUrl": "https://github.com/tw93/Waza.git",
       "skillPath": "skills/write/SKILL.md",
-      "skillFolderHash": "b88b04a30fcfbabcc0a5fd4488c99eeb18b7538c",
+      "skillFolderHash": "513f4f152ccecc742d81b9ea79820bc35213a396",
       "installedAt": "2026-04-07T08:11:02.881Z",
-      "updatedAt": "2026-07-13T03:18:44.510Z"
+      "updatedAt": "2026-07-20T03:35:46.783Z"
     },
     "learn": {
       "source": "tw93/Waza",
       "sourceType": "github",
       "sourceUrl": "https://github.com/tw93/Waza.git",
       "skillPath": "skills/learn/SKILL.md",
-      "skillFolderHash": "2cd617d40ac0598a4bbbf5587e13a52f39208c0a",
+      "skillFolderHash": "f1d71f175d62ba6f2981948378648b987134afb2",
       "installedAt": "2026-04-18T09:53:21.848Z",
-      "updatedAt": "2026-07-13T03:18:47.528Z"
+      "updatedAt": "2026-07-20T03:35:49.393Z"
     },
     "kami": {
       "source": "tw93/kami",
       "sourceType": "github",
       "sourceUrl": "https://github.com/tw93/kami.git",
       "skillPath": "SKILL.md",
-      "skillFolderHash": "f97bfc9ef83626edb863f6e42632067047a23601",
+      "skillFolderHash": "21fa0b19e8f3af58208a9354560e89565131a93a",
       "installedAt": "2026-04-21T09:16:26.120Z",
-      "updatedAt": "2026-07-13T03:19:56.707Z"
+      "updatedAt": "2026-07-20T03:36:48.644Z"
     },
     "html-effectiveness": {
       "source": "OiAnthony/html-effectiveness",
@@ -231,9 +231,18 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/OiAnthony/lark-cli-progressive-skill.git",
       "skillPath": "skills/lark/SKILL.md",
-      "skillFolderHash": "e0c89ba2d393e3d10552dfef01c6287c43a3cf62",
+      "skillFolderHash": "c0f60cd6b960fa4c8a04c2fc1a06b964e71d14cf",
       "installedAt": "2026-07-13T07:06:39.696Z",
-      "updatedAt": "2026-07-15T16:16:21.744Z"
+      "updatedAt": "2026-07-20T03:36:58.700Z"
+    },
+    "batch-grill-me": {
+      "source": "mattpocock/skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/mattpocock/skills.git",
+      "skillPath": "skills/in-progress/batch-grill-me/SKILL.md",
+      "skillFolderHash": "f2c0125db05db4d8f905a9423af308c476e2e4d5",
+      "installedAt": "2026-07-17T09:13:55.377Z",
+      "updatedAt": "2026-07-17T09:13:55.377Z"
     }
   },
   "dismissed": {

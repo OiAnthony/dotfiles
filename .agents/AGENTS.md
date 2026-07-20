@@ -34,6 +34,13 @@ Before implementing:
 - When explaining changes, describe current state → then new state.
 - When explaining systems, follow execution from outer boundary to inner execution.
 
+### Evidence-Driven Exploration
+
+- For open-ended exploration, investigation, codebase mapping, or unfamiliar subsystem analysis, prefer spawning an `explore` subagent. Give it a concrete question, scope, desired thoroughness, and require citations to primary evidence.
+- Investigate from the current repository state, not from the easiest available explanation. Trace actual behavior through source code, configuration, tests, build paths, and installed or generated artifacts.
+- Treat documentation, history, memory, and subagent summaries as context or leads, not proof. They may describe intended, outdated, or incomplete behavior. When they conflict with the current implementation or runtime, report the discrepancy explicitly.
+- Match evidence to the claim: cite current source files for structural claims; use reproduction, logs, tests, artifact inspection, or runtime observation for behavioral and root-cause claims. Verify decision-critical conclusions before planning, editing, or reporting findings.
+
 ## 2. Simplicity First
 
 **Minimum code that solves the problem. Nothing speculative.**
