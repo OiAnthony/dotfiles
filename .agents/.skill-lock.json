@@ -231,9 +231,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/OiAnthony/lark-cli-progressive-skill.git",
       "skillPath": "skills/lark/SKILL.md",
-      "skillFolderHash": "c0f60cd6b960fa4c8a04c2fc1a06b964e71d14cf",
+      "skillFolderHash": "3f3ff92eb45929fd45cd34e9ec7d60bcc66802e9",
       "installedAt": "2026-07-13T07:06:39.696Z",
-      "updatedAt": "2026-07-20T03:36:58.700Z"
+      "updatedAt": "2026-07-21T13:53:35.932Z"
     },
     "batch-grill-me": {
       "source": "mattpocock/skills",
