@@ -47,7 +47,7 @@ curl -fsSL https://raw.githubusercontent.com/OiAnthony/dotfiles/main/install.sh 
 | Shell 体验 | starship, fzf, zoxide, fd, ripgrep, jq, neovim, yazi |
 | Git 工具 | gh, lazygit, git-delta |
 | 运行时 | Node.js (LTS), Go, Python 3.14, Java 21, uv |
-| AI | Claude Code, agent-browser, RTK |
+| AI | Claude Code, agent-browser |
 | 开发框架 | OpenSpec |
 
 ### 通过官方脚本安装
@@ -72,7 +72,6 @@ curl -fsSL https://raw.githubusercontent.com/OiAnthony/dotfiles/main/install.sh 
 - `AGENTS.md` — AI 编码行为指南
 - `skills/` — 20+ 技能模块（代码审查、调试、写作、设计、OpenSpec 工作流）
 - `mcp.json` — MCP 服务器配置
-- `RTK.md` — Rust Token Killer 使用说明
 
 部署后通过 `~/.agents` 软链接生效，AI 工具自动发现。
 
@@ -135,6 +134,7 @@ make lint            # shellcheck
 make test            # 集成测试
 make test-idempotent # 幂等性测试
 make test-root       # root 路径
+make test-rtk-migration # RTK 升级迁移
 make test-all        # 全部
 ```
 
@@ -144,10 +144,9 @@ make test-all        # 全部
 dotfiles/
 ├── install.sh                   # 安装入口（支持 --tools/--shell/--agents）
 ├── mise.toml                    # 工具清单
-├── .agents/                     # AI 配置（skills、MCP、RTK）
+├── .agents/                     # AI 配置（skills、MCP）
 │   ├── skills/
 │   ├── mcp.json
-│   └── RTK.md
 ├── .chezmoi.toml.tmpl           # chezmoi 配置
 ├── .chezmoiexternal.toml        # chezmoi 外部依赖
 ├── .chezmoiscripts/             # 生成脚本（Shell 集成 + Zsh 补全缓存）
