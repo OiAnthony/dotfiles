@@ -142,10 +142,6 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 - Use `gh` for GitHub-related operations (issues, PRs, repos, workflows, API requests).
 
-## RTK - Rust Token Killer
-
-@~/.agents/RTK.md
-
 ---
 
 **These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.

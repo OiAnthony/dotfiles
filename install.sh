@@ -129,6 +129,41 @@ with open('$file', 'w') as f:
 "
 }
 
+_rtk_global_installation_exists() {
+  local claude_dir="$HOME/.claude"
+
+  [[ -f "$claude_dir/hooks/rtk-rewrite.sh" ]] && return 0
+  [[ -f "$claude_dir/RTK.md" ]] && return 0
+  if [[ -f "$claude_dir/settings.json" ]] && \
+     grep -Eq '"command"[[:space:]]*:[[:space:]]*"rtk hook claude"' "$claude_dir/settings.json"; then
+    return 0
+  fi
+  if [[ -f "$claude_dir/CLAUDE.md" ]] && grep -qF '@RTK.md' "$claude_dir/CLAUDE.md"; then
+    return 0
+  fi
+
+  return 1
+}
+
+_migrate_rtk() {
+  $INSTALL_AGENTS || return 0
+  _rtk_global_installation_exists || return 0
+
+  echo ""
+  echo "── RTK migration"
+  if ! command -v rtk &>/dev/null; then
+    echo "  RTK uninstall... FAILED (rtk not found; run: rtk init -g --uninstall)"
+    return 1
+  fi
+
+  if rtk init -g --uninstall >/dev/null 2>&1; then
+    echo "  RTK uninstall... ok"
+  else
+    echo "  RTK uninstall... FAILED (run: rtk init -g --uninstall)"
+    return 1
+  fi
+}
+
 _install_mise() {
   if ! command -v mise &>/dev/null; then
     curl -fsSL https://mise.run | sh >/dev/null 2>&1
@@ -410,13 +445,6 @@ _install_agents() {
     echo "  ~/.agents symlink... skip (已存在且非 symlink)"
   fi
 
-  if command -v rtk &>/dev/null; then
-    rtk init --global --hook-only --auto-patch >/dev/null 2>&1 && \
-      echo "  RTK hook... ok" || echo "  RTK hook... FAILED"
-  else
-    echo "  RTK hook... skip (rtk not installed)"
-  fi
-
   if command -v bunx &>/dev/null; then
     echo "  dotagents: 9 个 AI Agent symlink..."
     if bunx @oipsanthony/dotagents@latest --scope global --clients all --yes --force >/dev/null 2>&1; then
@@ -433,6 +461,8 @@ _install_agents() {
 # 执行
 # ==============================================================================
 
+# Remove integrations owned by tools being retired before mise hides the old binary.
+_migrate_rtk
 _install_tools
 # Agents must run before shell: _install_agents creates the ~/.agents → repo
 # symlink that dotagents uses as its source, and _install_shell's chezmoi apply

@@ -1,23 +1,8 @@
 {
   "mcpServers": {
-    "fetch": {
-      "type": "stdio",
-      "command": "uvx",
-      "args": [
-        "mcp-server-fetch"
-      ]
-    },
     "exa": {
       "type": "http",
       "url": "https://mcp.exa.ai/mcp"
-    },
-    "context7": {
-      "args": [
-        "-y",
-        "@upstash/context7-mcp"
-      ],
-      "command": "npx",
-      "type": "stdio"
     },
     "deepwiki": {
       "type": "http",

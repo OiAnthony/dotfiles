@@ -116,7 +116,7 @@ main() {
         check_command mise || ((failed += 1))
 
         log_info "Checking mise-managed tools..."
-        for tool in bun starship fzf zoxide yazi fd rg gh lazygit delta nvim node go python java uv jq claude agent-browser rtk openspec codex; do
+        for tool in bun starship fzf zoxide yazi fd rg gh lazygit delta nvim node go python java uv jq claude agent-browser openspec codex; do
             check_via_mise "$tool" || ((failed += 1))
         done
 
@@ -144,7 +144,7 @@ main() {
         check_command mise || ((failed += 1))
 
         log_info "Checking mise-managed tools..."
-        for tool in bun starship fzf zoxide yazi fd rg gh lazygit delta nvim node go python java uv jq claude agent-browser rtk openspec codex; do
+        for tool in bun starship fzf zoxide yazi fd rg gh lazygit delta nvim node go python java uv jq claude agent-browser openspec codex; do
             check_via_mise "$tool" || ((failed += 1))
         done
 
