@@ -234,15 +234,6 @@
       "skillFolderHash": "3f3ff92eb45929fd45cd34e9ec7d60bcc66802e9",
       "installedAt": "2026-07-13T07:06:39.696Z",
       "updatedAt": "2026-07-21T13:53:35.932Z"
-    },
-    "batch-grill-me": {
-      "source": "mattpocock/skills",
-      "sourceType": "github",
-      "sourceUrl": "https://github.com/mattpocock/skills.git",
-      "skillPath": "skills/in-progress/batch-grill-me/SKILL.md",
-      "skillFolderHash": "f2c0125db05db4d8f905a9423af308c476e2e4d5",
-      "installedAt": "2026-07-17T09:13:55.377Z",
-      "updatedAt": "2026-07-17T09:13:55.377Z"
     }
   },
   "dismissed": {
