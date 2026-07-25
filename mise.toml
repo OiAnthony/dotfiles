@@ -42,6 +42,7 @@ herdr = "latest"
 
 # Spec-driven development
 "npm:@fission-ai/openspec" = "latest"
+"npm:@opencode-ai/cli" = "next"
 
 [settings]
 # Avoid installing newly published releases until they have been available for 24 hours.
