@@ -61,8 +61,9 @@
       "sourceUrl": "https://github.com/anthropics/skills.git",
       "skillPath": "skills/skill-creator/SKILL.md",
       "skillFolderHash": "3cf9a8db32597ba3e24b584a3d696f4e11c7d7b6",
+      "pluginName": "example-skills",
       "installedAt": "2026-03-16T08:19:56.697Z",
-      "updatedAt": "2026-04-30T14:45:21.625Z"
+      "updatedAt": "2026-07-25T10:28:22.472Z"
     },
     "health": {
       "source": "tw93/Waza",
