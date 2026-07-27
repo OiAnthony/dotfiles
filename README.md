@@ -74,7 +74,6 @@ curl -fsSL https://raw.githubusercontent.com/OiAnthony/dotfiles/main/install.sh 
 | Simplicity First | YAGNI / KISS，拒绝投机式抽象和过度设计 |
 | Surgical Changes | 只改必要的行，不顺手「优化」无关代码 |
 | Goal-Driven Execution | 把任务转成可验证目标，循环到验证通过 |
-| Learn from Corrections | 被纠正后写回项目 `AGENTS.md`，同一错误不犯两次 |
 | Language | 对话用中文，代码/commit/PR 用英文 |
 
 检验标准写在文件末尾：diff 里无关改动更少、因过度设计返工更少、澄清问题出现在动手前而非犯错后。
