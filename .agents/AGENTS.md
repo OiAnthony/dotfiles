@@ -13,14 +13,6 @@ Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-s
 - Treat all encountered problems as yours. Fix broken states instead of bypassing them.
 - Focus on the most impactful point. Do not dump multiple directions at once.
 
-## Learn from Corrections
-
-**When the user corrects you, record it in the project's AGENTS.md or CLAUDE.md.**
-
-- If the user says "no", "don't", "stop doing X", or otherwise corrects your approach, and the mistake is likely to recur in the project, add a rule to the project's `AGENTS.md` or `CLAUDE.md`.
-- Only record when the lesson is project-relevant and reusable — not one-off misunderstandings.
-- Keep rules concise: what to avoid and what to do instead.
-
 ## 1. Think Before Coding
 
 **Don't assume. Don't hide confusion. Surface tradeoffs.**
