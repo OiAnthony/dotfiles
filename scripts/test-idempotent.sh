@@ -110,6 +110,42 @@ main() {
         ((failed += 1))
     fi
 
+    log_info "Verifying managed-file conflicts fail without overwriting local changes..."
+    local core_path="$HOME/.config/zsh/core.zsh"
+    local core_backup
+    local conflict_log
+    core_backup=$(mktemp)
+    conflict_log=$(mktemp)
+    cp "$core_path" "$core_backup"
+    printf '\n# idempotent test local change\n' >> "$core_path"
+
+    if ./install.sh --shell >"$conflict_log" 2>&1; then
+        log_error "✗ Managed-file conflict incorrectly reported success"
+        ((failed += 1))
+    elif grep -qF 'dotfiles 部署... FAILED (managed files have local changes; run: chezmoi diff)' "$conflict_log"; then
+        log_info "✓ Managed-file conflict failed with a visible diagnostic"
+    else
+        log_error "✗ Managed-file conflict did not report the expected diagnostic"
+        ((failed += 1))
+    fi
+
+    if grep -qF '✨ 安装完成！' "$conflict_log"; then
+        log_error "✗ Managed-file conflict printed the completion message"
+        ((failed += 1))
+    else
+        log_info "✓ Managed-file conflict did not print the completion message"
+    fi
+
+    if grep -qF '# idempotent test local change' "$core_path"; then
+        log_info "✓ Managed-file conflict preserved the local change"
+    else
+        log_error "✗ Managed-file conflict overwrote the local change"
+        ((failed += 1))
+    fi
+
+    cp "$core_backup" "$core_path"
+    rm -f "$core_backup" "$conflict_log"
+
     log_info "Verifying mise config backup-then-symlink behavior..."
     # Simulate a hand-written mise config that must NOT be silently destroyed:
     # replace the repo symlink with a real file, re-run install.sh, and assert

@@ -240,6 +240,7 @@ fi
 unset _android_home
 
 path=(
+  "$BUN_INSTALL/bin"
   "$HOME/go/bin"
   $path
 )
