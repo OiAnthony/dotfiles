@@ -376,7 +376,10 @@ _install_shell() {
   fi
 
   echo "  dotfiles 部署..."
-  chezmoi init --apply --source "$REPO_DIR" >/dev/null 2>&1
+  if ! chezmoi init --apply --source "$REPO_DIR" --no-tty; then
+    echo "  dotfiles 部署... FAILED (managed files have local changes; run: chezmoi diff)"
+    return 1
+  fi
   echo "  dotfiles 部署... ok"
 
   ZSHRC="$HOME/.zshrc"
