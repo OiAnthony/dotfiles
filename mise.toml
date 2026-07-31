@@ -26,6 +26,7 @@ uv = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"
 "aqua:jqlang/jq" = "latest"
 "aqua:neovim/neovim" = "latest"
+
 # Git tooling
 "aqua:cli/cli" = "latest" # gh
 "aqua:dandavison/delta" = "latest" # git-delta
@@ -36,13 +37,18 @@ uv = "latest"
 codex = "latest"
 opencode = "latest"
 pi = "latest"
-"github:can1357/oh-my-pi" = "latest"
+"github:can1357/oh-my-pi" = { version = "latest", rename_exe = "omp" }
 herdr = "latest"
 "npm:agent-browser" = "latest"
 
 # Spec-driven development
 "npm:@fission-ai/openspec" = "latest"
 "npm:@opencode-ai/cli" = "next"
+
+# Collaboration
+"npm:@larksuite/cli" = "latest"
+
+# Uncategorized
 
 [settings]
 # Avoid installing newly published releases until they have been available for 24 hours.
