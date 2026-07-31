@@ -28,7 +28,7 @@ Before implementing:
 
 ### Evidence-Driven Exploration
 
-- For open-ended exploration, investigation, codebase mapping, or unfamiliar subsystem analysis, prefer spawning an `explore` subagent. Give it a concrete question, scope, desired thoroughness, and require citations to primary evidence.
+- For open-ended exploration, investigation, codebase mapping, or unfamiliar subsystem analysis, prefer spawning an `explore`/`scout` subagent. Give it a concrete question, scope, desired thoroughness, and require citations to primary evidence.
 - Investigate from the current repository state, not from the easiest available explanation. Trace actual behavior through source code, configuration, tests, build paths, and installed or generated artifacts.
 - Treat documentation, history, memory, and subagent summaries as context or leads, not proof. They may describe intended, outdated, or incomplete behavior. When they conflict with the current implementation or runtime, report the discrepancy explicitly.
 - Match evidence to the claim: cite current source files for structural claims; use reproduction, logs, tests, artifact inspection, or runtime observation for behavioral and root-cause claims. Verify decision-critical conclusions before planning, editing, or reporting findings.
@@ -102,13 +102,13 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Language
 
-- Use Chinese for conversations, include the code review result and plan file content of plan mode.
-- Use English for all code-related content (code comments, UI strings, commit messages, PR descriptions) to ensure better internationalization and collaboration in open-source projects.
-- OpenSpec Propose artifacts (design docs, specs, task lists) must be written in Simplified Chinese.
-- Skills should output in Simplified Chinese. Professional terminology (e.g. function/class/variable names, API names, CLI commands, algorithm names) should remain in English.
+- Use Simplified Chinese for conversations, technical documents, plan files, code review results, OpenSpec Propose artifacts, and skill output, unless project or user instructions require another language.
+- Use English for code comments, UI strings, commit messages, and PR descriptions.
+- In Chinese prose, keep code identifiers, API and configuration names, commands, protocols, product and standard names, schema keys, enum values, and parser-sensitive tokens in their original form. Use established Chinese translations for conceptual terms; if no clear translation exists, introduce `中文名称（English term）` once, then use one term consistently.
 
 ## Documentation Standards
 
+- Apply STE-inspired discipline without claiming ASD-STE100 compliance: use one term per concept, follow the target language's grammar, and make actors, conditions, actions, and results explicit when ambiguity is possible.
 - Include: assumptions, setup, usage, verification steps when relevant.
 - When writing or editing a document file: Include Mermaid diagrams if they help clarify complex workflows or system architecture.
 - Avoid using double quotes and parentheses inside square brackets in Mermaid diagrams, as this can cause parsing errors.
