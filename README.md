@@ -70,13 +70,14 @@ curl -fsSL https://raw.githubusercontent.com/OiAnthony/dotfiles/main/install.sh 
 
 | 规范 | 约束什么 |
 |------|---------|
-| Think Before Coding | 先说假设、暴露分歧、不懂就问，禁止闷头动手 |
-| Simplicity First | YAGNI / KISS，拒绝投机式抽象和过度设计 |
-| Surgical Changes | 只改必要的行，不顺手「优化」无关代码 |
-| Goal-Driven Execution | 把任务转成可验证目标，循环到验证通过 |
-| Language | 对话用中文，代码/commit/PR 用英文 |
+| Scope and Autonomy | 优先从仓库推断安全默认，只在实质歧义、不可逆操作或缺少凭据时提问 |
+| Evidence and Exploration | 当前源码与运行证据优先，调查达到可行动标准后停止扩张 |
+| Implementation | YAGNI / KISS，只做满足需求的最小正确改动，不顺手重构无关代码 |
+| Communication | 行动深入、解释克制；分离关键进度更新与结果先行的最终回复 |
+| Verification and Completion | 按 bug、UI、feature、refactor、调查分别验证真实行为后再交付 |
+| Language and Documentation | 对话与技术文档默认中文，代码/commit/PR 默认英文，文档按读者需要组织 |
 
-检验标准写在文件末尾：diff 里无关改动更少、因过度设计返工更少、澄清问题出现在动手前而非犯错后。
+检验标准写在文件末尾：任务端到端完成、diff 更小且相关、可避免的澄清更少、结论基于当前证据、变更经过真实验证，最终回复不再被过程播报淹没。
 
 `CLAUDE.md` 软链到 `AGENTS.md`，供读取该文件名的工具使用，单一数据源。
 
