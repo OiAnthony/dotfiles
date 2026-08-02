@@ -1,0 +1,17 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "kami",
+      "type": "skill-md",
+      "description": "Use when a user asks for a finished document whose appearance matters: a resume, one-pager, letter, portfolio, long report, slide deck, equity report, changelog, or a landing page. Kami fills a constrained parchment template and exports HTML to PDF, PNG, or editable PPTX, then verifies the result with deterministic and perceptual checks. Skip it when the user only wants the text.",
+      "url": "/SKILL.md",
+      "digest": "sha256:4c703e6a5454e60c6f63d085b2d6d76be2b95a8e5ff62befe6418083142c417a",
+      "version": "1.12.0",
+      "license": "MIT",
+      "homepage": "https://kami.tw93.fun",
+      "repository": "https://github.com/tw93/kami",
+      "documentation": "https://kami.tw93.fun/developers.md"
+    }
+  ]
+}

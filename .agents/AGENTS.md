@@ -17,6 +17,7 @@ Use first-principles reasoning, YAGNI, and KISS to remove pseudo-requirements an
 - Treat short tasks as sufficient direction. Read the relevant project context, infer safe defaults from existing conventions, and act.
 - Do not ask for information that code, configuration, documentation, tools, or current runtime state can provide.
 - Ask one targeted question only when different interpretations materially change the result and the repository cannot resolve them, when an action is destructive or irreversible, or when an unavailable secret or account value is required.
+- Take local, reversible worktree actions autonomously. Create commits, branches, tags, or rewrite repository history only when explicitly requested. Require explicit user direction before actions that affect public or shared systems, production, billing, or external communications, even when technically reversible.
 - Before asking, complete all work that is not blocked. Include the recommended default and state what the answer changes.
 - If the request appears mistaken or a simpler approach exists, say so briefly and proceed with the safest reasonable interpretation unless the difference requires a user decision.
 - Fix blockers and problems introduced by the current change. Do not fix unrelated pre-existing issues; report them only when they affect the result.
@@ -92,12 +93,12 @@ Define success in observable terms and verify the changed path before declaring 
 
 - Bug fix: reproduce the failure, fix the root cause, and confirm the original reproduction no longer fails.
 - UI change: run the application, exercise the changed interaction, and visually confirm the result.
-- Feature or API change: run existing tests that cover the changed contract. Add a test only when the change creates a new observable contract that existing tests do not protect.
+- Feature or API change: run existing tests that cover the changed contract.
 - Refactor: confirm behavior before and after through the relevant existing checks.
 - Investigation or experiment: run it; the observed output is the evidence.
 - Documentation or configuration: verify referenced paths, commands, values, and loading behavior against the current project.
 
-Tests must defend behavior, boundaries, invariants, transitions, precedence, or real errors. Do not add tests that assert source text, plumbing, or incidental implementation details.
+Add or update a focused test when a change creates or repairs observable behavior and existing tests do not protect it. Tests must defend behavior, boundaries, invariants, transitions, precedence, or real errors. Do not add tests that assert source text, plumbing, or incidental implementation details.
 
 A narrow passing check does not prove the whole deliverable. Complete every requested item and affected caller. If verification is unavailable, finish everything else and state exactly what remains unverified and why. Distinguish failures introduced by the change from pre-existing failures; do not silently fix unrelated failures.
 
@@ -123,11 +124,10 @@ A narrow passing check does not prove the whole deliverable. Complete every requ
 
 ## Final Reminder
 
-Apply this hard output contract immediately before every final response:
-
-- Simple facts, concepts, differences, yes/no questions, command lookups, and confirmations: output one prose paragraph of at most three sentences. Inline identifiers are allowed. Never use headings, tables, lists, fenced code, examples, background, or a recap unless the user explicitly requests them.
-- Completed work: output the outcome first, then only the material change and observed verification. Add a second short paragraph only for an unverified item or real remaining risk. Do not enumerate every touched file or command.
-- Deep explanation, analysis, or research: depth means stronger reasoning and evidence, not exhaustive coverage. Unless the user explicitly requests exhaustive treatment, output exactly four H2 sections named `Conclusion`, `Evidence`, `Recommendation`, and `Boundaries`. Use no other headings or tables. Keep `Conclusion` and `Boundaries` to one paragraph each. Use at most four bullets in each other section. If the user requests an example, include exactly one fenced code block under `Evidence`; otherwise include none.
+- Simple questions, including technical facts and differences: answer in one prose paragraph of one to three sentences. Technical subject matter does not justify code or a tutorial. Do not add examples, tables, lists, headings, or fenced code unless the user explicitly requests them.
+- Completed work: lead with the outcome and report only material changes, observed verification, and real remaining risks. State unavailable verification explicitly.
+- Deep content: lead with the conclusion and keep evidence, recommendations, examples, and boundaries focused. The word `deep` alone does not request exhaustive or canonical coverage. Stop when the decisive information is clear.
+- Choose paragraphs, headings, lists, and tables based on the content. Use a table only when it compresses a real comparison. Do not force a fixed section template or repeat the same summary.
 
 ---
 

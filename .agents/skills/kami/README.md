@@ -135,8 +135,8 @@ Warm parchment canvas `#f5f4ed`, ink blue `#1B365D` as the sole accent, serif ca
 - **Diagrams.** Eighteen inline SVG types, including a report-scale architecture board. Sequence, class, and ER can be authored from Mermaid text: [beautiful-mermaid](https://github.com/lukilabs/beautiful-mermaid) renders the SVG and `scripts/mermaid_normalize.py` re-themes it to the Kami palette and makes it WeasyPrint-safe, no Node bundled.
 - **Slides.** Three rendering paths: WeasyPrint HTML to PDF by default, python-pptx for editable PPTX on request, and a Marp variant in `assets/templates/marp/` for Markdown-first decks.
 - **Code.** Pygments-based syntax highlighting when `Pygments` is installed; without it, PDFs still render and code stays monochrome.
-- **Verification.** Deterministic quality gates: per-type content schemas validate structure before layout, a coverage check confirms every fact survives into the filled page, and a visual pass exports page images against a fixed review checklist.
-- **MCP.** A zero-dependency MCP server (`scripts/mcp_server.py`) exposes render, check, and screenshot tools, so any MCP-capable agent can drive Kami as an engine without loading the full skill prompt. Render only trusted local HTML: referenced file, HTTP, and HTTPS resources load with the MCP process's permissions.
+- **Verification.** Deterministic quality gates: per-type content schemas validate structure before layout, an optional structured brief records the artifact's target and acceptance boundary, a coverage check confirms every fact survives into the filled page, and a visual pass exports page images against a fixed review checklist.
+- **MCP.** A zero-dependency MCP server (`scripts/mcp_server.py`) exposes capability diagnosis, render, structured check, and screenshot tools, so any MCP-capable agent can drive Kami as an engine without loading the full skill prompt. Render only trusted local HTML: referenced file, HTTP, and HTTPS resources load with the MCP process's permissions.
 - **Print.** Parchment is the default canvas; an opt-in white-paper variant flips any document to a white background for home or office printers, sinking the warmth into cards and tables so the hierarchy still reads. The [one-page Kami intro](assets/demos/demo-kami-print.pdf) (Chinese) is rendered with this variant; recipe in [production.md](references/production.md).
 
 Kami picks the right variant based on the language you write in.
@@ -174,7 +174,7 @@ One constraint set, applied past the page: it lays out deployable websites and b
 </tr>
 </table>
 
-Landing pages ship as deployable multilingual sites. Illustrations are drawn by the host's own image model: where the host can generate images, like ChatGPT, it renders directly; where it cannot, like Claude or Codex, it outputs the brief for you to paste into any image model.
+Landing pages ship as deployable multilingual sites. Illustrations use the host's own image generation when that capability is available; otherwise Kami outputs the same complete brief for use in an image model.
 
 ```text
 Redraw this as a clean editorial diagram. Background: warm parchment (#f5f4ed), never pure white. One accent only, ink blue (#1B365D); everything else in warm gray with a yellow-brown undertone, no other colors. Thin single-line geometric strokes and simple flat icons. No gradients, no drop shadows, no 3D. Labels in a serif typeface. Generous whitespace, calm and composed, like a figure in a well-typeset report.

@@ -30,6 +30,7 @@
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
+    "@id": "https://kami.tw93.fun/#kami",
     "name": "Kami",
     "description": "AI 기반 전문 문서를 위한 따뜻한 양피지 디자인 시스템. 하나의 강조색, 세리프 주도 계층 구조, 에디토리얼 여백.",
     "url": "https://kami.tw93.fun",
@@ -40,6 +41,13 @@
       "name": "Tw93",
       "url": "https://tw93.fun",
       "sameAs": ["https://github.com/tw93", "https://twitter.com/HiTw93", "https://tw93.fun", "https://weekly.tw93.fun", "https://yobi.tw93.fun"]
+    },
+    "sameAs": [
+      "https://github.com/tw93/kami",
+      "https://kami.tw93.fun/"
+    ],
+    "publisher": {
+      "@id": "https://kami.tw93.fun/#organization"
     },
     "offers": {
       "@type": "Offer",
@@ -88,6 +96,78 @@
     ]
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://kami.tw93.fun/#organization",
+    "name": "Kami",
+    "alternateName": "Kami 紙",
+    "url": "https://kami.tw93.fun/",
+    "logo": "https://kami.tw93.fun/assets/images/logo.svg",
+    "image": "https://kami.tw93.fun/assets/showcase/kami-landing.png",
+    "description": "Open-source document design system for AI agents, maintained by Tw93 under the MIT license.",
+    "email": "hitw93@gmail.com",
+    "founder": {
+      "@type": "Person",
+      "name": "Tw93",
+      "url": "https://tw93.fun"
+    },
+    "sameAs": [
+      "https://github.com/tw93/kami",
+      "https://github.com/tw93",
+      "https://x.com/HiTw93",
+      "https://twitter.com/HiTw93",
+      "https://tw93.fun"
+    ],
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "contactType": "technical support",
+        "url": "https://github.com/tw93/kami/issues",
+        "email": "hitw93@gmail.com",
+        "availableLanguage": ["en", "zh-CN"]
+      },
+      {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "url": "https://kami.tw93.fun/contact",
+        "email": "hitw93@gmail.com",
+        "availableLanguage": ["en", "zh-CN"]
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://kami.tw93.fun/#website",
+        "url": "https://kami.tw93.fun/",
+        "name": "Kami",
+        "description": "A warm parchment design system for AI-assisted professional documents.",
+        "publisher": { "@id": "https://kami.tw93.fun/#organization" },
+        "inLanguage": ["en", "zh-CN", "zh-Hant", "ja", "ko"]
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://kami.tw93.fun/index-ko.html#webpage",
+        "url": "https://kami.tw93.fun/index-ko.html",
+        "name": "Kami 紙: AI 에이전트를 위한 문서 디자인 시스템",
+        "isPartOf": { "@id": "https://kami.tw93.fun/#website" },
+        "about": { "@id": "https://kami.tw93.fun/#kami" },
+        "primaryImageOfPage": "https://kami.tw93.fun/assets/showcase/kami-landing.png",
+        "inLanguage": "ko",
+        "speakable": {
+          "@type": "SpeakableSpecification",
+          "cssSelector": [".hero h1", ".hero .tagline", ".manifesto"]
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 <main class="page">
@@ -95,7 +175,7 @@
   <!-- ============ HERO ============ -->
   <header class="hero">
     <div class="eyebrow">
-      <span>Design System · v1.10.0<span class="eyebrow-date"> · 2026.07</span></span>
+      <span>Design System · v1.12.0<span class="eyebrow-date"> · 2026.08</span></span>
       <span class="hero-links">
         <nav class="lang-switch" aria-label="Language" data-lang-switch>
           <button class="lang-trigger" type="button" aria-expanded="false" data-lang-trigger>한국어</button>
@@ -323,7 +403,7 @@ codex plugin add kami@kami</pre>
       </div>
       <div class="type-row">
         <div class="type-label">Label</div>
-        <div class="type-sample label">Design System · v1.10.0</div>
+        <div class="type-sample label">Design System · v1.12.0</div>
         <div class="type-specs"><b>7.5-8 pt</b><br>weight 600<br>line 1.35</div>
       </div>
     </div>
@@ -436,7 +516,7 @@ codex plugin add kami@kami</pre>
       </div>
       <div class="comp">
         <h3>코드 블록</h3>
-        <p class="hint">ivory bg + 0.5pt border + 6pt radius</p>
+        <p class="hint">ivory bg + 4pt radius, no border</p>
 <pre class="code"><span class="c">// warmth from restraint, not from color</span>
 canvas   = parchment; accent = <span class="k">ink_blue</span>
 palette  = <span class="k">warm_neutrals</span> − cool_grays
@@ -571,12 +651,12 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
       <tr><td class="task">숫자 강조</td><td class="how"><code>color: var(--brand)</code>, 볼드 아님</td></tr>
       <tr><td class="task">두 섹션 구분</td><td class="how"><code>2.5pt</code> brand 좌측 바, 또는 <code>0.5pt</code> warm-gray 점선</td></tr>
       <tr><td class="task">인용</td><td class="how">좌측 <code>2pt</code> brand solid + olive 텍스트</td></tr>
-      <tr><td class="task">코드 표시</td><td class="how">Ivory bg + <code>0.5pt</code> border + <code>6pt</code> radius + mono font</td></tr>
+      <tr><td class="task">코드 표시</td><td class="how">Ivory bg + <code>4pt</code> radius + mono font, no border</td></tr>
       <tr><td class="task">기본 vs 보조</td><td class="how">기본: brand fill + ivory text; 보조: warm-sand + charcoal</td></tr>
-      <tr><td class="task">특별 카드 표시</td><td class="how"><code>border: 0.5pt solid var(--brand)</code> 또는 <code>border-left: 3pt</code></td></tr>
+      <tr><td class="task">특별 카드 표시</td><td class="how"><code>border-left: 1.4pt solid var(--brand)</code>, 한 변만</td></tr>
       <tr><td class="task">섹션 시작</td><td class="how">Serif <code>500</code> · <code>15pt</code> · 크기 주도 계층, 장식 불필요</td></tr>
       <tr><td class="task">문서 표지</td><td class="how">단일 페이지, Display 크기 + 우측 정렬 저자/날짜 + 넉넉한 여백</td></tr>
-      <tr><td class="task">데이터 카드</td><td class="how">Ivory bg + <code>8pt</code> radius + serif 큰 숫자, ink blue + sans 작은 레이블</td></tr>
+      <tr><td class="task">핵심 수치 표시</td><td class="how">베이스라인 한 줄, 투명 배경, 컨테이너 없음 + serif 큰 숫자 + sans 작은 레이블</td></tr>
     </table>
   </section>
 
@@ -589,37 +669,33 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
     </div>
 
     <div class="anti">
-      <div class="no">
-        <h3>하지 마세요</h3>
-        <p><code>#ffffff</code> 순백이나 <code>#f3f4f6</code> 쿨 그레이를 페이지 배경으로 사용하지 마세요. 페이지가 딱딱해지고 따뜻한 양피지 특성이 약해집니다.</p>
+      <div class="anti-row">
+        <p class="anti-topic">페이지 배경</p>
+        <div class="anti-pair">
+          <p class="anti-line never"><span class="cue">지양</span><span><code>#ffffff</code> 순백이나 <code>#f3f4f6</code> 쿨 그레이 배경. 페이지가 딱딱해지고 따뜻한 양피지 특성이 약해집니다.</span></p>
+          <p class="anti-line instead"><span class="cue">권장</span><span>항상 <code>#f5f4ed</code> 양피지. 인쇄 시 흰 테두리를 막기 위해 <code>@page background</code>도 같은 색으로 설정합니다.</span></p>
+        </div>
       </div>
-      <div class="yes">
-        <h3>하세요</h3>
-        <p>항상 <code>#f5f4ed</code> 양피지를 사용하세요. 인쇄 시 흰 테두리를 방지하기 위해 <code>@page background</code>도 같은 색상으로 설정하세요.</p>
+      <div class="anti-row">
+        <p class="anti-topic">태그 색상</p>
+        <div class="anti-pair">
+          <p class="anti-line never"><span class="cue">지양</span><span>태그의 <code>rgba(27,54,93,0.18)</code>. WeasyPrint는 패딩과 글리프 영역을 다른 불투명도로 렌더링하여 이중 사각형을 만듭니다.</span></p>
+          <p class="anti-line instead"><span class="cue">권장</span><span>틴트 조회 표의 등가 솔리드 hex <code>#E4ECF5</code>. 렌더링이 깔끔하게 유지되고 색상이 안정적입니다.</span></p>
+        </div>
       </div>
-      <div class="no">
-        <h3>하지 마세요</h3>
-        <p>태그에 <code>rgba(27,54,93,0.18)</code>를 사용하지 마세요. WeasyPrint는 패딩과 글리프 영역을 다른 불투명도로 렌더링하여 이중 사각형을 만듭니다.</p>
+      <div class="anti-row">
+        <p class="anti-topic">합성 볼드</p>
+        <div class="anti-pair">
+          <p class="anti-line never"><span class="cue">지양</span><span><code>font-weight: 600</code> 이상의 합성 볼드 제목. 획이 흐려지고 타이포그래피 품질이 떨어집니다.</span></p>
+          <p class="anti-line instead"><span class="cue">권장</span><span>본문 400, 제목 500 (실제 W05). 더 강한 존재감이 필요하면 크기나 brand 좌측 바를 사용합니다.</span></p>
+        </div>
       </div>
-      <div class="yes">
-        <h3>하세요</h3>
-        <p>등가 솔리드 hex <code>#E4ECF5</code>를 위한 틴트 조회 표를 사용하세요. 렌더링이 깔끔하게 유지되고 색상이 안정적입니다.</p>
-      </div>
-      <div class="no">
-        <h3>하지 마세요</h3>
-        <p>제목을 <code>font-weight: 600</code> 이상의 합성 볼드로 설정하지 마세요. 합성 볼드는 획을 흐리게 하고 타이포그래피 품질을 떨어뜨립니다.</p>
-      </div>
-      <div class="yes">
-        <h3>하세요</h3>
-        <p>본문 400, 제목 500 (실제 W05). 더 강한 존재감이 필요하면 크기나 brand 좌측 바를 사용하고, 합성 볼드는 절대 사용하지 마세요.</p>
-      </div>
-      <div class="no">
-        <h3>하지 마세요</h3>
-        <p>하드 드롭 섀도우 <code>0 2px 8px rgba(0,0,0,0.3)</code>을 사용하지 마세요. 시각적으로 무겁고 인쇄 시 어두운 얼룩으로 나타날 수 있습니다.</p>
-      </div>
-      <div class="yes">
-        <h3>하세요</h3>
-        <p>링 섀도우 <code>0 0 0 1pt</code> 또는 위스퍼 <code>rgba 0.05</code>, 아니면 단순히 밝고 어두운 섹션을 교차시키세요.</p>
+      <div class="anti-row">
+        <p class="anti-topic">섀도우</p>
+        <div class="anti-pair">
+          <p class="anti-line never"><span class="cue">지양</span><span>하드 드롭 섀도우 <code>0 2px 8px rgba(0,0,0,0.3)</code>. 시각적으로 무겁고 인쇄 시 어두운 얼룩으로 나타납니다.</span></p>
+          <p class="anti-line instead"><span class="cue">권장</span><span>링 섀도우 <code>0 0 0 1pt</code> 또는 위스퍼 <code>rgba 0.05</code>, 아니면 밝고 어두운 섹션을 교차시킵니다.</span></p>
+        </div>
       </div>
     </div>
   </section>
@@ -676,7 +752,8 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
       </div>
     </div>
     <div class="colophon">
-      <div><a href="https://github.com/tw93/kami" style="color:var(--brand); text-decoration:none; font-weight:500;">GitHub</a>&nbsp;&nbsp;·&nbsp;&nbsp;One-Pager · Long Doc · Letter · Portfolio · Resume · Slides</div>
+      <div><a href="./developers" style="color:var(--brand); text-decoration:none; font-weight:500;">개발자</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="./about" style="color:var(--brand); text-decoration:none; font-weight:500;">소개</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="./contact" style="color:var(--brand); text-decoration:none; font-weight:500;">문의</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="./privacy" style="color:var(--brand); text-decoration:none; font-weight:500;">개인정보</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://github.com/tw93/kami" style="color:var(--brand); text-decoration:none; font-weight:500;">GitHub</a></div>
+      <div style="margin-top:6px;">One-Pager · Long Doc · Letter · Portfolio · Resume · Slides</div>
       <div style="margin-top:8px; color: var(--olive); font-family: var(--serif);">
         Serif는 권위를, sans는 기능을, 따뜻한 회색은 리듬을, 잉크 블루는 초점을 담당합니다.
       </div>

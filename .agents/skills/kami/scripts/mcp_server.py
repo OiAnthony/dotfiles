@@ -14,8 +14,9 @@ Register with an MCP client, for example:
 
 Tools:
     kami_templates   discover templates, diagram library, content schema types
+    kami_doctor      report installed render, check, PPTX, and font capabilities
     kami_render      render a filled HTML file to PDF (WeasyPrint + highlight)
-    kami_check       run the matching deterministic checks for a file
+    kami_check       run deterministic checks with stable findings and coverage
     kami_screenshot  rasterize a PDF to page PNGs plus the review checklist
 
 Transport: newline-delimited JSON-RPC 2.0 on stdin/stdout (MCP stdio).
@@ -37,20 +38,55 @@ from checks import (
     check_placeholders,
 )
 from content import check_content
-from optional_deps import MissingDepError
+from optional_deps import MissingDepError, doctor_report
 from render import render_pdf
 from shared import (
     DIAGRAM_TEMPLATES,
     HTML_TEMPLATES,
+    MARP_TEMPLATES,
+    PPTX_TEMPLATES,
     ROOT,
     SCREEN_TEMPLATES,
     content_schema_types,
     kami_version,
 )
 from visual import MAX_DPI, MIN_DPI, REVIEW_CHECKLIST, render_pages
+from verify import check_fonts
 
 PROTOCOL_VERSION = "2025-06-18"
 SUPPORTED_PROTOCOL_VERSIONS = {"2024-11-05", "2025-03-26", "2025-06-18"}
+
+CHECK_RULESET_VERSION = 2
+CHECK_REGISTRY = {
+    "html.placeholders": {
+        "scope": "html", "severity": "error", "required_engine": "stdlib",
+        "explanation": "Completed HTML must not expose unresolved template placeholders.",
+    },
+    "html.markdown-residue": {
+        "scope": "html", "severity": "error", "required_engine": "stdlib",
+        "explanation": "Rendered audience copy must not expose raw Markdown syntax.",
+    },
+    "content.contract": {
+        "scope": "content-ir", "severity": "error", "required_engine": "stdlib",
+        "explanation": "Content IR must satisfy its document schema and optional artifact brief.",
+    },
+    "content.coverage": {
+        "scope": "html+content-ir", "severity": "error", "required_engine": "stdlib",
+        "explanation": "Every atomic fact and required asset in content IR must survive into the document.",
+    },
+    "pdf.markdown-residue": {
+        "scope": "pdf", "severity": "error", "required_engine": "pypdf",
+        "explanation": "Extracted PDF text must not expose raw Markdown syntax.",
+    },
+    "pdf.orphans": {
+        "scope": "pdf", "severity": "warning", "required_engine": "pymupdf",
+        "explanation": "Rendered text blocks must not end in short orphan lines.",
+    },
+    "pdf.density": {
+        "scope": "pdf", "severity": "warning", "required_engine": "pymupdf",
+        "explanation": "Rendered pages must not carry excessive trailing whitespace.",
+    },
+}
 
 TOOLS = [
     {
@@ -59,6 +95,16 @@ TOOLS = [
             "List Kami document templates, browser-only templates, the diagram "
             "library, and content schema types, with the reference docs to read "
             "before filling."
+        ),
+        "inputSchema": {"type": "object", "properties": {}},
+    },
+    {
+        "name": "kami_doctor",
+        "description": (
+            "Report whether this installed Kami runtime can render PDFs, run "
+            "visual checks, build editable PPTX fallback decks, and resolve "
+            "the expected font families. Read-only; missing capabilities are "
+            "reported explicitly rather than treated as clean checks."
         ),
         "inputSchema": {"type": "object", "properties": {}},
     },
@@ -85,7 +131,8 @@ TOOLS = [
             "Run Kami's deterministic checks for a file. HTML: placeholders + "
             "markdown residue (+ content coverage when a content IR JSON is "
             "given). PDF: markdown residue + orphans + density. JSON: content "
-            "IR schema validation. Returns the full report text."
+            "IR schema validation. Returns the legacy report plus stable rule "
+            "IDs, findings, coverage status, and explicit degraded checks."
         ),
         "inputSchema": {
             "type": "object",
@@ -101,8 +148,8 @@ TOOLS = [
         "description": (
             "Rasterize every PDF page to PNG for a perceptual review pass. "
             "Writes or replaces <pdf-stem>-visual/page-*.png, then returns the "
-            "image paths and fixed review checklist; view every image against "
-            "the checklist before shipping."
+            "image paths, deterministic CJK font verdict, and fixed review "
+            "checklist; view every image against the checklist before shipping."
         ),
         "inputSchema": {
             "type": "object",
@@ -131,6 +178,8 @@ def tool_templates(_args: dict) -> dict:
         "version": kami_version(),
         "document_templates": {name: spec.source for name, spec in HTML_TEMPLATES.items()},
         "screen_templates": dict(SCREEN_TEMPLATES),
+        "pptx_templates": dict(PPTX_TEMPLATES),
+        "marp_templates": dict(MARP_TEMPLATES),
         "diagram_templates": dict(DIAGRAM_TEMPLATES),
         "content_schema_types": content_schema_types(),
         "templates_dir": str(ROOT / "assets" / "templates"),
@@ -144,6 +193,10 @@ def tool_templates(_args: dict) -> dict:
             str(ROOT / "references" / "anti-patterns.md"),
         ],
     }
+
+
+def tool_doctor(_args: dict) -> dict:
+    return doctor_report()
 
 
 def tool_render(args: dict) -> dict:
@@ -171,11 +224,37 @@ def tool_render(args: dict) -> dict:
     return {"pdf": str(out), "pages": pages}
 
 
-def _run_check(fn, argv: list[str]) -> tuple[int, str]:
+def _run_check(fn, argv: list[str], **kwargs) -> tuple[int, str]:
     buffer = io.StringIO()
     with contextlib.redirect_stdout(buffer):
-        code = fn(argv)
+        code = fn(argv, **kwargs)
     return code, buffer.getvalue().rstrip()
+
+
+def _check_plan(path: Path, content: str | None) -> list[tuple[str, object, list[str]]]:
+    suffix = path.suffix.lower()
+    if suffix in {".html", ".htm"}:
+        checks: list[tuple[str, object, list[str]]] = [
+            ("html.placeholders", check_placeholders, [str(path)]),
+            ("html.markdown-residue", check_markdown_residue, [str(path)]),
+        ]
+        if content:
+            content_path = str(_resolve(content))
+            checks.append((
+                "content.contract",
+                check_content,
+                [content_path, str(path)],
+            ))
+        return checks
+    if suffix == ".pdf":
+        return [
+            ("pdf.markdown-residue", check_markdown_residue, [str(path)]),
+            ("pdf.orphans", check_orphans, [str(path)]),
+            ("pdf.density", check_density, [str(path)]),
+        ]
+    if suffix == ".json":
+        return [("content.contract", check_content, [str(path)])]
+    raise ValueError(f"unsupported file type: {path.name} (expected .html, .pdf, or .json)")
 
 
 def tool_check(args: dict) -> dict:
@@ -183,29 +262,49 @@ def tool_check(args: dict) -> dict:
     if not path.exists():
         raise FileNotFoundError(f"file not found: {path}")
 
-    suffix = path.suffix.lower()
     reports: list[str] = []
+    coverage: list[dict] = []
+    findings: list[dict] = []
     worst = 0
-    if suffix in {".html", ".htm"}:
-        checks = [(check_placeholders, [str(path)]), (check_markdown_residue, [str(path)])]
-        if args.get("content"):
-            checks.append((check_content, [str(_resolve(args["content"])), str(path)]))
-    elif suffix == ".pdf":
-        checks = [
-            (check_markdown_residue, [str(path)]),
-            (check_orphans, [str(path)]),
-            (check_density, [str(path)]),
-        ]
-    elif suffix == ".json":
-        checks = [(check_content, [str(path)])]
-    else:
-        raise ValueError(f"unsupported file type: {path.name} (expected .html, .pdf, or .json)")
-
-    for fn, argv in checks:
-        code, report = _run_check(fn, argv)
+    def record(rule_id: str, code: int, report: str) -> None:
+        nonlocal worst
         worst = max(worst, code)
+        status = "passed" if code == 0 else ("failed" if code == 1 else "degraded")
+        rule = {"id": rule_id, **CHECK_REGISTRY[rule_id]}
+        coverage.append({**rule, "status": status, "exit_code": code})
+        if status != "passed":
+            findings.append({**rule, "status": status, "evidence": report})
+
+    for rule_id, fn, argv in _check_plan(path, args.get("content")):
+        if rule_id == "content.contract" and len(argv) == 2:
+            phase_codes: dict[str, int] = {}
+            _, report = _run_check(fn, argv, phase_codes=phase_codes)
+            reports.append(report)
+            contract_code = phase_codes.get("contract", 2)
+            record("content.contract", contract_code, report)
+            if contract_code == 0 and "coverage" in phase_codes:
+                record("content.coverage", phase_codes["coverage"], report)
+            else:
+                rule = {"id": "content.coverage", **CHECK_REGISTRY["content.coverage"]}
+                coverage.append({
+                    **rule,
+                    "status": "not_run",
+                    "exit_code": None,
+                    "blocked_by": "content.contract",
+                })
+            continue
+        code, report = _run_check(fn, argv)
         reports.append(report)
-    return {"exit_code": worst, "ok": worst == 0, "report": "\n".join(reports)}
+        record(rule_id, code, report)
+    return {
+        "ruleset_version": CHECK_RULESET_VERSION,
+        "exit_code": worst,
+        "ok": worst == 0,
+        "degraded": any(item["status"] == "degraded" for item in coverage),
+        "findings": findings,
+        "coverage": coverage,
+        "report": "\n".join(reports),
+    }
 
 
 def tool_screenshot(args: dict) -> dict:
@@ -216,15 +315,27 @@ def tool_screenshot(args: dict) -> dict:
     if dpi is not None and (isinstance(dpi, bool) or not isinstance(dpi, int)):
         raise ValueError("dpi must be an integer")
     pages = render_pages(pdf, dpi=dpi)
+    font_code, font_report = _run_check(check_fonts, [str(pdf)])
     return {
+        "rasterized": True,
+        "review_pending": True,
         "pages": [str(p) for p in pages],
+        "font_check": {
+            "exit_code": font_code,
+            "ok": font_code == 0,
+            "report": font_report,
+        },
         "review_checklist": list(REVIEW_CHECKLIST),
-        "instruction": "View every page image against the checklist before shipping.",
+        "instruction": (
+            "Require font_check.ok, then view every page image against the "
+            "checklist. Settle the perceptual review outside this tool before shipping."
+        ),
     }
 
 
 TOOL_HANDLERS = {
     "kami_templates": tool_templates,
+    "kami_doctor": tool_doctor,
     "kami_render": tool_render,
     "kami_check": tool_check,
     "kami_screenshot": tool_screenshot,

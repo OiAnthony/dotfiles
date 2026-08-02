@@ -27,9 +27,6 @@ jobs:
       - name: Check generated Codex plugin metadata
         run: python3 scripts/build_metadata.py --check
 
-      - name: Run test suite
-        run: python3 scripts/tests/test_build.py
-
       - name: Build and audit skill package
         run: bash scripts/package-skill.sh /tmp/kami-ci.zip
 
@@ -58,7 +55,13 @@ jobs:
             fonts-noto-cjk fonts-noto-cjk-extra
 
       - name: Install Python deps
-        run: python3 -m pip install weasyprint pypdf Pygments
+        # pymupdf backs --check-fonts (it reads the text spans of a rendered PDF);
+        # without it that step exits 2 on a missing dependency rather than judging
+        # the fonts.
+        run: python3 -m pip install weasyprint pypdf pymupdf Pygments
+
+      - name: Run full test suite with render dependencies
+        run: python3 scripts/tests/test_build.py
 
       - name: Verify strict page-count targets
         # Only the six hard-invariant templates (resume == 2, one-pager == 1
@@ -77,3 +80,10 @@ jobs:
           python3 scripts/build.py --verify resume
           python3 scripts/build.py --verify resume-en
           python3 scripts/build.py --verify resume-ko
+
+      - name: Check which family actually drew the CJK text
+        # Page counts cannot see the typeface. With fonts-noto-cjk installed
+        # this reports a serif fallback and passes; it fails if the CJK body
+        # ever lands on a sans or gets split across two families, which is how
+        # a broken font install would otherwise ship looking merely "fine".
+        run: python3 scripts/build.py --check-fonts assets/examples/one-pager.pdf assets/examples/one-pager-ko.pdf assets/examples/resume.pdf

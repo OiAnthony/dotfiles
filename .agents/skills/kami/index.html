@@ -18,6 +18,7 @@
   <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml">
   <link rel="stylesheet" href="./styles.css">
   <link rel="canonical" href="https://kami.tw93.fun/">
+  <link rel="alternate" type="text/markdown" href="https://kami.tw93.fun/index.md">
   <link rel="alternate" hreflang="en" href="https://kami.tw93.fun/">
   <link rel="alternate" hreflang="zh-CN" href="https://kami.tw93.fun/index-zh.html">
   <link rel="alternate" hreflang="ja" href="https://kami.tw93.fun/index-ja.html">
@@ -40,6 +41,7 @@
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
+    "@id": "https://kami.tw93.fun/#kami",
     "name": "Kami",
     "description": "A warm parchment design system for AI-assisted professional documents. One accent color, serif-led hierarchy, and editorial whitespace.",
     "url": "https://kami.tw93.fun",
@@ -50,6 +52,13 @@
       "name": "Tw93",
       "url": "https://tw93.fun",
       "sameAs": ["https://github.com/tw93", "https://twitter.com/HiTw93", "https://tw93.fun", "https://weekly.tw93.fun", "https://yobi.tw93.fun"]
+    },
+    "sameAs": [
+      "https://github.com/tw93/kami",
+      "https://kami.tw93.fun/"
+    ],
+    "publisher": {
+      "@id": "https://kami.tw93.fun/#organization"
     },
     "offers": {
       "@type": "Offer",
@@ -98,6 +107,78 @@
     ]
   }
   </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "@id": "https://kami.tw93.fun/#organization",
+    "name": "Kami",
+    "alternateName": "Kami 紙",
+    "url": "https://kami.tw93.fun/",
+    "logo": "https://kami.tw93.fun/assets/images/logo.svg",
+    "image": "https://kami.tw93.fun/assets/showcase/kami-landing.png",
+    "description": "Open-source document design system for AI agents, maintained by Tw93 under the MIT license.",
+    "email": "hitw93@gmail.com",
+    "founder": {
+      "@type": "Person",
+      "name": "Tw93",
+      "url": "https://tw93.fun"
+    },
+    "sameAs": [
+      "https://github.com/tw93/kami",
+      "https://github.com/tw93",
+      "https://x.com/HiTw93",
+      "https://twitter.com/HiTw93",
+      "https://tw93.fun"
+    ],
+    "contactPoint": [
+      {
+        "@type": "ContactPoint",
+        "contactType": "technical support",
+        "url": "https://github.com/tw93/kami/issues",
+        "email": "hitw93@gmail.com",
+        "availableLanguage": ["en", "zh-CN"]
+      },
+      {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "url": "https://kami.tw93.fun/contact",
+        "email": "hitw93@gmail.com",
+        "availableLanguage": ["en", "zh-CN"]
+      }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        "@id": "https://kami.tw93.fun/#website",
+        "url": "https://kami.tw93.fun/",
+        "name": "Kami",
+        "description": "A warm parchment design system for AI-assisted professional documents.",
+        "publisher": { "@id": "https://kami.tw93.fun/#organization" },
+        "inLanguage": ["en", "zh-CN", "zh-Hant", "ja", "ko"]
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://kami.tw93.fun/#webpage",
+        "url": "https://kami.tw93.fun/",
+        "name": "Kami: Document Design System for AI Agents",
+        "isPartOf": { "@id": "https://kami.tw93.fun/#website" },
+        "about": { "@id": "https://kami.tw93.fun/#kami" },
+        "primaryImageOfPage": "https://kami.tw93.fun/assets/showcase/kami-landing.png",
+        "inLanguage": "en",
+        "speakable": {
+          "@type": "SpeakableSpecification",
+          "cssSelector": [".hero h1", ".hero .tagline", ".manifesto"]
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 <main class="page">
@@ -105,7 +186,7 @@
   <!-- ============ HERO ============ -->
   <header class="hero">
     <div class="eyebrow">
-      <span>Design System · v1.10.0<span class="eyebrow-date"> · 2026.07</span></span>
+      <span>Design System · v1.12.0<span class="eyebrow-date"> · 2026.08</span></span>
       <span class="hero-links">
         <nav class="lang-switch" aria-label="Language" data-lang-switch>
           <button class="lang-trigger" type="button" aria-expanded="false" data-lang-trigger>English</button>
@@ -333,7 +414,7 @@ codex plugin add kami@kami</pre>
       </div>
       <div class="type-row">
         <div class="type-label">Label</div>
-        <div class="type-sample label">Design System · v1.10.0</div>
+        <div class="type-sample label">Design System · v1.12.0</div>
         <div class="type-specs"><b>7.5-8 pt</b><br>weight 600<br>line 1.35</div>
       </div>
     </div>
@@ -446,7 +527,7 @@ codex plugin add kami@kami</pre>
       </div>
       <div class="comp">
         <h3>Code Block</h3>
-        <p class="hint">ivory bg + 0.5pt border + 6pt radius</p>
+        <p class="hint">ivory bg + 4pt radius, no border</p>
 <pre class="code"><span class="c">// warmth from restraint, not from color</span>
 canvas   = parchment; accent = <span class="k">ink_blue</span>
 palette  = <span class="k">warm_neutrals</span> − cool_grays
@@ -581,12 +662,12 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
       <tr><td class="task">Emphasize a number</td><td class="how"><code>color: var(--brand)</code>, not bold</td></tr>
       <tr><td class="task">Separate two sections</td><td class="how"><code>2.5pt</code> brand left bar, or <code>0.5pt</code> warm-gray dashed</td></tr>
       <tr><td class="task">Quote someone</td><td class="how">Left <code>2pt</code> brand solid + olive text</td></tr>
-      <tr><td class="task">Show code</td><td class="how">Ivory bg + <code>0.5pt</code> border + <code>6pt</code> radius + mono font</td></tr>
+      <tr><td class="task">Show code</td><td class="how">Ivory bg + <code>4pt</code> radius + mono font, no border</td></tr>
       <tr><td class="task">Primary vs secondary</td><td class="how">Primary: brand fill + ivory text; Secondary: warm-sand + charcoal</td></tr>
-      <tr><td class="task">Mark a special card</td><td class="how"><code>border: 0.5pt solid var(--brand)</code> or <code>border-left: 3pt</code></td></tr>
+      <tr><td class="task">Mark a special card</td><td class="how"><code>border-left: 1.4pt solid var(--brand)</code>, one edge only</td></tr>
       <tr><td class="task">Begin a section</td><td class="how">Serif <code>500</code> · <code>15pt</code> · size-led hierarchy, no decoration needed</td></tr>
       <tr><td class="task">Document cover</td><td class="how">Single page, Display size + right-aligned author/date + generous whitespace</td></tr>
-      <tr><td class="task">Data card</td><td class="how">Ivory bg + <code>8pt</code> radius + serif large number, ink blue + sans small label</td></tr>
+      <tr><td class="task">Show key figures</td><td class="how">Baseline row, transparent, no container + serif number, ink blue + sans label</td></tr>
     </table>
   </section>
 
@@ -599,37 +680,33 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
     </div>
 
     <div class="anti">
-      <div class="no">
-        <h3>Don't</h3>
-        <p>Use <code>#ffffff</code> pure white or <code>#f3f4f6</code> cool gray as page background. It makes the page feel brittle and weakens the warm parchment character.</p>
+      <div class="anti-row">
+        <p class="anti-topic">Page canvas</p>
+        <div class="anti-pair">
+          <p class="anti-line never"><span class="cue">Never</span><span>Pure white <code>#ffffff</code> or cool gray <code>#f3f4f6</code> as page background. It makes the page feel brittle and weakens the warm parchment character.</span></p>
+          <p class="anti-line instead"><span class="cue">Instead</span><span>Always <code>#f5f4ed</code> parchment, with <code>@page background</code> set to the same color to avoid white edges when printing.</span></p>
+        </div>
       </div>
-      <div class="yes">
-        <h3>Do</h3>
-        <p>Always use <code>#f5f4ed</code> parchment. Set <code>@page background</code> to the same color to avoid white edges when printing.</p>
+      <div class="anti-row">
+        <p class="anti-topic">Tag tints</p>
+        <div class="anti-pair">
+          <p class="anti-line never"><span class="cue">Never</span><span><code>rgba(27,54,93,0.18)</code> for tags. WeasyPrint renders padding and glyph areas at different opacity, creating double rectangles.</span></p>
+          <p class="anti-line instead"><span class="cue">Instead</span><span>The tint lookup table's equivalent solid hex <code>#E4ECF5</code>. The rendering stays clean and the color remains stable.</span></p>
+        </div>
       </div>
-      <div class="no">
-        <h3>Don't</h3>
-        <p>Use <code>rgba(27,54,93,0.18)</code> for tags. WeasyPrint renders padding and glyph areas at different opacity, creating double rectangles.</p>
+      <div class="anti-row">
+        <p class="anti-topic">Synthetic bold</p>
+        <div class="anti-pair">
+          <p class="anti-line never"><span class="cue">Never</span><span>Headlines at <code>font-weight: 600</code> or heavier synthetic bold. It blurs strokes and degrades typographic quality.</span></p>
+          <p class="anti-line instead"><span class="cue">Instead</span><span>Body 400, headings 500 (real W05). For more presence, use size or a brand left bar, never synthetic bold.</span></p>
+        </div>
       </div>
-      <div class="yes">
-        <h3>Do</h3>
-        <p>Use the tint lookup table for equivalent solid hex <code>#E4ECF5</code>. The rendering stays clean and the color remains stable.</p>
-      </div>
-      <div class="no">
-        <h3>Don't</h3>
-        <p>Set headlines to <code>font-weight: 600</code> or heavier synthetic bold. Synthetic bold blurs strokes and degrades typographic quality.</p>
-      </div>
-      <div class="yes">
-        <h3>Do</h3>
-        <p>Body 400, headings 500 (real W05). For more presence, use size or a brand left bar, never synthetic bold.</p>
-      </div>
-      <div class="no">
-        <h3>Don't</h3>
-        <p>Use hard drop shadow <code>0 2px 8px rgba(0,0,0,0.3)</code>. Visually heavy and likely to print as dark blobs.</p>
-      </div>
-      <div class="yes">
-        <h3>Do</h3>
-        <p>Ring shadow <code>0 0 0 1pt</code> or whisper <code>rgba 0.05</code>, or simply alternate light and dark sections.</p>
+      <div class="anti-row">
+        <p class="anti-topic">Shadows</p>
+        <div class="anti-pair">
+          <p class="anti-line never"><span class="cue">Never</span><span>Hard drop shadow <code>0 2px 8px rgba(0,0,0,0.3)</code>. Visually heavy and likely to print as dark blobs.</span></p>
+          <p class="anti-line instead"><span class="cue">Instead</span><span>Ring shadow <code>0 0 0 1pt</code> or whisper <code>rgba 0.05</code>, or simply alternate light and dark sections.</span></p>
+        </div>
       </div>
     </div>
   </section>
@@ -686,7 +763,8 @@ beauty   = constraints × <span class="k">intention</span> ÷ noise</pre>
       </div>
     </div>
     <div class="colophon">
-      <div><a href="https://github.com/tw93/kami" style="color:var(--brand); text-decoration:none; font-weight:500;">GitHub</a>&nbsp;&nbsp;·&nbsp;&nbsp;One-Pager · Long Doc · Letter · Portfolio · Resume · Slides</div>
+      <div><a href="./developers" style="color:var(--brand); text-decoration:none; font-weight:500;">Developers</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="./about" style="color:var(--brand); text-decoration:none; font-weight:500;">About</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="./contact" style="color:var(--brand); text-decoration:none; font-weight:500;">Contact</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="./privacy" style="color:var(--brand); text-decoration:none; font-weight:500;">Privacy</a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://github.com/tw93/kami" style="color:var(--brand); text-decoration:none; font-weight:500;">GitHub</a></div>
+      <div style="margin-top:6px;">One-Pager · Long Doc · Letter · Portfolio · Resume · Slides</div>
       <div style="margin-top:8px; color: var(--olive); font-family: var(--serif);">
         Serif carries authority, sans function, warm grays rhythm, ink blue focus.
       </div>
