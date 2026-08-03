@@ -187,9 +187,9 @@
       "sourceType": "github",
       "sourceUrl": "https://github.com/OiAnthony/lark-cli-progressive-skill.git",
       "skillPath": "skills/lark/SKILL.md",
-      "skillFolderHash": "de3b7ceaef5af9fa8e4ed9a15550ea74e59c590f",
+      "skillFolderHash": "83fdec62a6e13cec1831d32d3690e8db9026dcdd",
       "installedAt": "2026-07-13T07:06:39.696Z",
-      "updatedAt": "2026-08-02T10:18:37.499Z"
+      "updatedAt": "2026-08-03T07:38:16.907Z"
     },
     "herdr": {
       "source": "herdrdev/herdr",
