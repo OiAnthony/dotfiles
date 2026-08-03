@@ -1,197 +1,81 @@
 # 测试架构说明
 
-## 概述
+仓库使用 ShellCheck 和 Ubuntu 24.04 容器验证 `install.sh`。Makefile 优先使用 Docker，未安装 Docker 时使用 Podman。
 
-dotfiles 使用 Docker 容器提供隔离的测试环境，验证 `install.sh` 在干净系统上的安装结果。
-
-## 测试类型
-
-### 1. 静态检查（ShellCheck）
-
-**目的**：在运行前捕获 Shell 脚本语法错误和常见问题
-
-**覆盖文件**：
-
-- `install.sh`
-
-**运行方式**：
+## 测试入口
 
 ```bash
-make lint
+make lint               # ShellCheck 静态检查
+make test               # 普通用户完整安装
+make test-shell         # Zsh 与 mise 集成
+make test-idempotent    # 重复安装
+make test-piped         # curl 管道安装路径
+make test-root          # Linux root 安装
+make test-rtk-migration # 旧 RTK 集成迁移
+make test-all           # 聚合检查，不包含 test-shell
 ```
 
-### 2. 集成测试
+`make lint` 检查以下 Shell 文件：
 
-**目的**：验证完整安装流程
-
-**测试内容**：
-
-- mise 工具链安装（starship, fzf, fd, rg, gh, lazygit, delta, nvim, node, go, python, java, uv, jq）
-- chezmoi 部署的 dotfiles（.zshrc, .zshenv, .zprofile, .gitconfig, core.zsh, starship.toml）
-- 软链接验证（mise/config.toml, .agents）
-- mise 管理的 Bun、Bun 驱动的 npm backend、pnpm 与 Zsh PATH
-- 完整交互式 Zsh 初始化、fzf 懒加载和 mise runtime 执行
-- 20 次热启动性能门禁：P95 不超过 100 ms
-- macOS 额外验证：字体安装、Homebrew
-
-**运行方式**：
-
-```bash
-make test
+```text
+install.sh
+scripts/*.sh
+dot_local/bin/executable_benchmark-zsh
 ```
 
-### 3. 幂等性测试
+`make test-all` 当前包含 `lint`、`test`、`test-idempotent`、`test-piped`、`test-root` 和 `test-rtk-migration`。需要验证完整交互式 Zsh 初始化时，应另外运行 `make test-shell`。
 
-**目的**：验证重复运行安全性
+## 容器测试覆盖什么
 
-**测试内容**：
+Dockerfile 基于 Ubuntu 24.04，并创建普通用户 `testuser`。不同入口覆盖：
 
-- 运行 install.sh 两次
-- 验证软链接未改变（md5sum）
-- 验证 .zshrc 中 source 行只出现一次（未重复追加）
+- mise 工具和 runtime 安装；
+- chezmoi 部署的 Zsh、Git 与 Starship 配置；
+- `~/.config/mise/config.toml` 和 `~/.agents` 软链接；
+- Bun、pnpm、mise shims 与 Zsh `PATH`；
+- fzf 延迟加载和 Shell completion；
+- 普通用户、Linux `root`、重复安装和管道安装路径；
+- 旧 RTK 全局集成的清理。
 
-**运行方式**：
+容器无法验证 macOS 的 Homebrew 和字体路径。真实机器的 Shell 启动性能仍需使用 `benchmark-zsh` 验收。
 
-```bash
-make test-idempotent
-```
+## GitHub API 限流
 
-## Docker 架构
-
-### 基础镜像
-
-**FROM**: ubuntu:24.04
-
-**预装组件**：
-
-- 系统依赖：build-essential, curl, git, zsh, sudo
-- 非 root 用户 testuser（用于 testuser 路径，root 路径通过 `-u 0` 覆盖）
-
-### 缓存优化
-
-**分层策略**：
-
-1. 系统依赖安装（很少变化）
-2. 项目文件复制（频繁变化）
-
-**效果**：
-
-- 冷缓存：~10 分钟
-- 热缓存：~4 分钟（仅重新复制项目文件）
-
-## 本地测试命令
-
-通过 Makefile 在本地运行测试：
-
-```bash
-make lint            # ShellCheck 静态检查
-make test            # 集成测试（testuser）
-make test-idempotent # 幂等性测试
-make test-root       # root 用户测试
-make test-piped      # 管道安装测试
-make test-all        # 全部测试
-```
-
-测试会优先使用当前 `GITHUB_TOKEN`；未设置时尝试读取 `gh auth token`，避免连续安装触发 GitHub 匿名 API 限流。token 仅作为容器环境变量传递，不会出现在命令行中。
-
-## 不覆盖的范围
-
-### macOS 特定路径
-
-Docker 无法运行 macOS，以下路径不会被测试：
-
-- Apple Silicon Homebrew 路径：`/opt/homebrew`
-- Intel Mac Homebrew 路径：`/usr/local`
-
-**缓解措施**：开发者在本地 macOS 环境手动测试
-
-### Shell 启动性能
-
-容器测试使用伪终端运行完整交互式初始化，避免命中 GUI/no-TTY 快速返回分支。容器结果用于防止明显回退，真实机器仍使用 `benchmark-zsh` 验收。
+Makefile 会优先使用环境中的 `GITHUB_TOKEN`；未设置时尝试读取 `gh auth token`。token 只作为容器环境变量传入，用于降低连续下载 GitHub release 时触发匿名 API 限流的概率。
 
 ## 本地调试
 
-### 进入容器
+先构建镜像：
 
 ```bash
-# 构建镜像
 make build
-
-# 进入容器
-docker run -it dotfiles-test bash
-
-# 手动运行安装
-./install.sh
-
-# 检查结果
-command -v git
-ls -la ~/.gitconfig
-cat ~/.zshrc
 ```
 
-### 查看测试日志
-
-测试脚本使用颜色输出：
-
-- 🟢 绿色：成功
-- 🔴 红色：失败
-- 🟡 黄色：警告（可选工具未安装）
-
-## 维护指南
-
-### 添加新工具验证
-
-编辑 `scripts/test-install.sh`，在 "验证 mise 工具" 部分添加新工具：
+进入普通用户容器：
 
 ```bash
-for tool in starship fzf zoxide fd rg gh lazygit delta nvim node go python uv jq NEW_TOOL; do
-    check_via_mise "$tool" || ((failed++))
-done
+docker run --rm -it dotfiles-test bash
 ```
 
-### 修改安装检测逻辑
+仓库位于 `/opt/dotfiles`，可以直接运行单个测试脚本：
 
-同时更新：
+```bash
+/opt/dotfiles/scripts/test-install.sh
+/opt/dotfiles/scripts/test-shell.sh
+```
 
-1. `install.sh` - 安装时检测
-2. `scripts/test-install.sh` - 测试验证
+如果本机使用 Podman，将示例中的 `docker` 替换为 `podman`。
 
-### 更新 Docker 缓存
+## 维护测试
 
-修改 `Dockerfile` 后会自动失效构建缓存，首次构建会较慢。
+修改安装行为时，应同步更新对应测试：
 
-## 故障排查
+| 改动 | 主要验证入口 |
+| --- | --- |
+| 工具清单或 mise 安装 | `scripts/test-install.sh` |
+| Zsh、PATH、completion | `scripts/test-shell.sh` |
+| 重复执行行为 | `scripts/test-idempotent.sh` |
+| 管道安装和仓库克隆 | `scripts/test-piped-install.sh` |
+| RTK 清理逻辑 | `scripts/test-rtk-migration.sh` |
 
-### 测试失败：mise 工具未装
-
-**原因**：GitHub release 拉取受限或网络问题
-
-**解决**：
-
-- 设置 `https_proxy` 或 `GITHUB_TOKEN`
-- 检查 `mise.toml` 中的后端是否可用：`mise registry | grep <tool>`
-- 单独运行 `mise install` 查看详细错误
-
-### 测试失败：软链接验证
-
-**原因**：路径不匹配
-
-**解决**：
-
-- 检查 `install.sh` 中的软链接创建逻辑
-- 验证 `PROJECT_ROOT` 变量正确
-
-### CI 超时
-
-**原因**：首次安装下载量大
-
-**解决**：
-
-- 设置 `GITHUB_TOKEN` 提高 GitHub release 限流
-- 在 mise.toml 中 pin 具体版本，提高缓存命中
-
-## 参考
-
-- [ShellCheck Wiki](https://www.shellcheck.net/wiki/)
-- [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
-- [GitHub Actions Caching](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows)
+修改 Dockerfile 会使镜像构建缓存失效。下载失败时先设置 `GITHUB_TOKEN` 或网络代理，再单独运行失败的测试入口查看完整日志。

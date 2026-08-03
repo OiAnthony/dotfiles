@@ -1,309 +1,109 @@
 <p align="center">
-  <img src="https://r2.unono.app/2026/05/823f369a1d565f9b9f2918c4e02837eb.png" alt="dev-setup" width="600" />
+  <img src="https://r2.unono.app/2026/05/823f369a1d565f9b9f2918c4e02837eb.png" alt="dotfiles 开发环境" width="600" />
 </p>
 
 <h1 align="center">dotfiles</h1>
 
 <p align="center">
-  <strong>一行命令部署开发环境与 AI 编码工作流</strong>
+  一次部署开发工具、Zsh 环境和 Coding Agent 工作流。
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/macOS-支持-success?style=flat-square&logo=apple" alt="macOS" />
-  <img src="https://img.shields.io/badge/Linux-支持-success?style=flat-square&logo=linux" alt="Linux" />
-  <img src="https://img.shields.io/badge/Apple%20Silicon-支持-success?style=flat-square" alt="Apple Silicon" />
-  <img src="https://img.shields.io/badge/root-支持-success?style=flat-square" alt="root" />
+  <img src="https://img.shields.io/badge/macOS-supported-success?style=flat-square&logo=apple" alt="支持 macOS" />
+  <img src="https://img.shields.io/badge/Linux-supported-success?style=flat-square&logo=linux" alt="支持 Linux" />
+  <img src="https://img.shields.io/badge/Apple%20Silicon-supported-success?style=flat-square" alt="支持 Apple Silicon" />
 </p>
 
----
+## 这个仓库解决什么问题
 
-## 这是什么
+新机器的开发环境通常分散在多套工具和配置里：语言运行时各自安装，Shell 体验依赖手工复制，Claude Code、Codex、pi 等 Coding Agent 又各自维护规则和 Skill。这个仓库把它们收敛成一套可重复执行的配置。
 
-三个独立模块，可按需组合：
+全量安装后会得到三个相互独立的模块：
 
-- **🛠️ 工具链**：[mise](https://mise.jdx.dev) 统一管理 6 个 runtime(Node LTS / Bun / Go / Python 3.14 / Java 21 / uv)与 20+ CLI 工具，含 Claude Code、Codex、pi、OpenSpec 等 AI 命令行
-- **🐚 Shell 配置**：[chezmoi](https://chezmoi.io) 部署手写 Zsh 配置 + Git(delta diff)+ Starship prompt，启动 P50 < 60ms
-- **🤖 Agent 配置**：以 `AGENTS.md` 行为规范为核心，搭配 29 个 Agent Skills + MCP 配置，覆盖探索、设计、实现、审查全流程
+| 模块 | 安装后的效果 |
+| --- | --- |
+| 开发工具 | [mise](https://mise.jdx.dev/) 统一管理 Node.js、Bun、Go、Python、Java、常用 CLI 和 AI 开发工具 |
+| Shell | [chezmoi](https://www.chezmoi.io/) 部署 Zsh、Git、Starship、补全和插件配置，同时保留机器专属配置入口 |
+| Coding Agent | `~/.agents` 统一提供 `AGENTS.md`、Agent Skills、命令和 MCP 配置，再同步到支持的 AI 客户端 |
 
-支持 macOS 和 Linux(包括 root 环境)，完全幂等(重复运行无副作用)。
+安装脚本支持重复执行。macOS 需要使用普通用户，Linux 同时支持普通用户和 `root`。
 
 ## 快速开始
 
-### 完整安装(新机器推荐)
+### 全量安装
+
+适合新机器，一次安装开发工具、Shell 和 Coding Agent 配置：
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/OiAnthony/dotfiles/main/install.sh | bash
 ```
 
-安装完成后：
-
-1. **重启终端**或运行 `exec zsh` 加载新配置
-2. 运行 `mise doctor` 验证工具链
-3. 运行 `benchmark-zsh` 检查 Shell 性能(可选)
-
-<details>
-<summary><strong>模块化安装</strong>(已有环境，只装需要的部分)</summary>
-
-在 `bash -s --` 后追加模块 flag，可自由组合：
+安装完成后运行：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/OiAnthony/dotfiles/main/install.sh | bash -s -- --agents --shell
+exec zsh
+mise doctor
 ```
 
-| Flag | 部署内容 | 适用场景 |
-|------|---------|----------|
-| `--agents` | `.agents/` → `~/.agents`：`AGENTS.md`、Skills、`mcp.json` | 只要 AI 编码工作流，不动现有环境 |
-| `--tools` | `mise.toml` → `~/.config/mise/config.toml` 并安装全部工具 | 统一管理开发工具，保留现有 Shell |
-| `--shell` | Zsh + Git + Starship 配置(chezmoi 部署) | 只要 Shell 配置，不装额外工具 |
+如果脚本新建了 `~/.gitconfig`，首次使用 Git 前还需要替换其中的占位用户名和邮箱。
 
-模块间无硬性依赖。`--agents` 需配合支持 Skills 的 AI 工具(如 pi、Claude Code)。
+### 仅安装 Agents 模块
 
-</details>
+适合已有开发环境，只复用 Coding Agent 工作流：
 
-## AI 工作流
-
-`.agents/` 目录软链到 `~/.agents`，对机器上所有项目生效。
-
-### `AGENTS.md` — 行为规范
-
-整套工作流的灵魂。它不是文档，而是约束 AI 如何工作的规则集，与项目自身的 `AGENTS.md` 叠加：
-
-| 规范 | 约束什么 |
-|------|---------|
-| Scope and Autonomy | 优先从仓库推断安全默认，只在实质歧义、不可逆操作或缺少凭据时提问 |
-| Evidence and Exploration | 当前源码与运行证据优先，调查达到可行动标准后停止扩张 |
-| Implementation | YAGNI / KISS，只做满足需求的最小正确改动，不顺手重构无关代码 |
-| Communication | 行动深入、解释克制；分离关键进度更新与结果先行的最终回复 |
-| Verification and Completion | 按 bug、UI、feature、refactor、调查分别验证真实行为后再交付 |
-| Language and Documentation | 对话与技术文档默认中文，代码/commit/PR 默认英文，文档按读者需要组织 |
-
-检验标准写在文件末尾：任务端到端完成、diff 更小且相关、可避免的澄清更少、结论基于当前证据、变更经过真实验证，最终回复不再被过程播报淹没。
-
-`CLAUDE.md` 软链到 `AGENTS.md`，供读取该文件名的工具使用，单一数据源。
-
-### 任务流程
-
-**轻量任务**(单次对话完成)
-
+```bash
+curl -fsSL https://raw.githubusercontent.com/OiAnthony/dotfiles/main/install.sh | bash -s -- --agents
 ```
+
+该命令会把仓库的 `.agents/` 链接到 `~/.agents`。如果环境中已有 `bunx`，还会通过 dotagents 同步到支持的 AI 客户端；没有 `bunx` 时只跳过客户端同步，不影响 `~/.agents` 软链接。
+
+模块组合、平台行为和已有配置的处理方式参见[安装与模块说明](docs/installation.md)。
+
+## Coding Agent 工作流
+
+`.agents/AGENTS.md` 是工作流的基础：它约束 Agent 如何确定范围、收集证据、实施修改、验证结果和汇报结论。全局规则会与项目自己的 `AGENTS.md` 叠加，项目规则负责补充当前代码库的技术和业务边界。
+
+`.agents/skills/` 在此基础上提供面向具体任务的工作流：
+
+- `/think`：在编码前澄清需求、权衡方案并形成可执行计划；
+- `/hunt`：从复现和证据出发定位故障根因；
+- `/check`：独立审查改动、发布条件或项目状态；
+- `/openspec-*`：管理需要设计、任务拆分和归档的复杂变更。
+
+### 轻量任务
+
+一次会话能够完成的问题，先确定方案或根因，再实现并审查：
+
+```text
 /think → implement this plan → /check
-/hunt → fix it → /check
+/hunt  → fix it              → /check
 ```
 
-**复杂任务**(OpenSpec)
+### 复杂变更
+
+需要设计文档和可追踪任务时，使用 OpenSpec 串联探索、提案、实现、审查和归档：
 
 ```mermaid
-graph LR
-    A["/openspec-explore<br/>探索需求与技术方案"] --> B["/openspec-propose<br/>生成设计文档与任务清单"]
-    B -->|new session| C["/openspec-apply-change<br/>逐任务实现"]
-    C -->|new session| D["/check<br/>独立审查"]
-    D --> |new session| E["/openspec-archive-change<br/>归档变更"]
-    E --> F[完成]
+flowchart LR
+    accTitle: OpenSpec 复杂变更工作流
+    accDescr: 从探索需求开始，依次生成提案、实施变更、独立审查，最后归档。
+
+    A[探索需求<br/>/openspec-explore] --> B[生成提案<br/>/openspec-propose]
+    B -->|new session| C[实施变更<br/>/openspec-apply-change]
+    C -->|new session| D[独立审查<br/>/check]
+    D -->|new session| E[归档变更<br/>/openspec-archive-change]
 ```
 
-分阶段开新 session 是有意设计：`/check` 在新 session 审查，避开实现阶段的惯性思维。
+实现、审查和归档建议使用独立 session，减少实现上下文对审查判断的影响。
 
-## 装了什么
+## 按需查阅
 
-### 工具链(mise 管理)
-
-**Shell 体验**
-
-- starship(极简 prompt)、fzf(fuzzy finder)、zoxide(智能跳转)
-- fd(文件查找)、ripgrep(内容搜索)、jq(JSON 处理)
-- neovim、yazi(终端文件管理器)
-
-**Git 工具**
-
-- gh(GitHub CLI)、lazygit(TUI)、git-delta(增强 diff)
-
-**Runtime**
-
-- Node.js LTS、Go latest、Python 3.14、Java 21、uv(Python package manager)
-- Bun + pnpm
-
-**AI 开发**
-
-- Claude Code、Codex、opencode、pi(+ oh-my-pi)、herdr
-- agent-browser(浏览器自动化)、OpenSpec(Spec-Driven Development)
-
-### Shell 配置(chezmoi 部署)
-
-手写的 Zsh 配置，无 Oh My Zsh 框架：
-
-- `~/.zshrc`(用户自定义，不受 chezmoi 管理)
-- `~/.config/zsh/core.zsh`(核心配置：alias、completion、fzf lazy loading)
-- `~/.gitconfig`(delta diff、自定义 alias)
-- `~/.config/starship.toml`(prompt 主题)
-- zsh-autosuggestions + fast-syntax-highlighting plugin
-
-## 日常使用
-
-### 基础操作
-
-```bash
-# 预览配置变更
-chezmoi diff --exclude scripts
-
-# 应用配置(会重新生成 Shell 集成脚本和 completion cache)
-chezmoi apply
-
-# 更新工具链
-mise install
-mise upgrade
-
-# 进入仓库目录
-chezmoi cd
-```
-
-## 自定义
-
-### 添加新工具
-
-使用 `mise use -g` 自动安装并写入 `mise.toml`，优先使用 `aqua:` 或 `ubi:` backend：
-
-```bash
-mise use -g aqua:sharkdp/bat
-mise use -g ubi:BurntSushi/ripgrep
-```
-
-也可以手动编辑 `mise.toml` 后运行 `mise install`。
-
-### 修改 Shell 配置
-
-**用户自定义**(推荐)
-
-直接编辑 `~/.zshrc`，添加环境变量、alias 或第三方工具初始化。此文件不受 chezmoi 管理。
-
-**修改核心配置**
-
-使用 chezmoi 工作流：
-
-```bash
-chezmoi edit ~/.config/zsh/core.zsh
-chezmoi diff --exclude scripts
-chezmoi apply
-```
-
-### 添加新 Skill
-
-```bash
-bunx skills add <owner/repo>
-```
-
-浏览更多 skills：[skills.sh](https://skills.sh/)
-
-## 故障排查
-
-### Shell 启动慢
-
-运行性能基准测试：
-
-```bash
-benchmark-zsh
-```
-
-目标：P50 < 60ms，P95 < 100ms。若超标，检查 `~/.zshrc` 中是否有重量级初始化调用。
-
-### mise 工具找不到
-
-```bash
-# 诊断工具链状态
-mise doctor
-
-# 重新安装所有工具
-mise install
-
-# 验证特定工具
-mise which node
-```
-
-### chezmoi 配置冲突
-
-```bash
-# 查看冲突内容
-chezmoi diff
-
-# 强制覆盖本地修改
-chezmoi apply --force
-
-# 手动合并冲突
-chezmoi merge ~/.config/zsh/core.zsh
-```
-
-### 环境变量或 secret 管理
-
-**不要将 secret 提交到仓库**。机器本地配置应放在：
-
-```bash
-~/.config/zsh/private/env.zsh  # 权限 600
-```
-
-此文件会被自动加载，但不受版本控制。
-
-## 开发与测试
-
-### 运行测试
-
-```bash
-make lint            # shellcheck 静态检查
-make test            # Docker 容器集成测试
-make test-idempotent # 幂等性验证
-make test-root       # root 用户路径测试
-make test-rtk-migration # RTK 工具升级 migration 测试
-make test-all        # 运行全部 test suite
-```
-
-### 本地验证
-
-```bash
-# 非交互式安装(CI 模式)
-CI=true ./install.sh
-
-# 模拟安装(不执行实际部署)
-DOTFILES_NO_EXEC=1 ./install.sh
-```
-
-## 进阶文档
-
-- [Zsh 性能优化指南](docs/zsh-optimization.md)
-- [测试说明](docs/testing.md)
-
-<details>
-<summary>目录结构速览</summary>
-
-```
-dotfiles/
-├── install.sh                   # 安装入口(--tools/--shell/--agents)
-├── mise.toml                    # 工具链 manifest
-├── .agents/                     # AI 配置(→ ~/.agents)
-│   ├── AGENTS.md                # 全局 Agent 行为规范(核心)
-│   ├── skills/                  # Agent Skills
-│   └── mcp.json                 # MCP 服务器配置
-├── .chezmoi.toml.tmpl           # chezmoi 主配置
-├── .chezmoiexternal.toml        # 外部依赖(Zsh 插件)
-├── .chezmoiscripts/             # 部署后脚本
-│   └── run_after_*.sh.tmpl      # 生成 Shell 集成与 completion cache
-├── dot_zshrc / dot_zshenv       # Zsh 入口(部署到 ~/)
-├── dot_gitconfig                # Git 配置
-├── dot_config/                  # 映射到 ~/.config/
-│   ├── starship.toml            # Prompt 主题
-│   └── zsh/core.zsh             # 核心 Shell 配置
-├── Makefile / Dockerfile        # 测试基础设施
-├── scripts/                     # 测试与基准脚本
-└── docs/                        # 进阶文档
-```
-
-</details>
-
-## 致谢
-
-- [mise](https://github.com/jdx/mise) — 工具链管理
-- [chezmoi](https://github.com/twpayne/chezmoi) — dotfiles 管理
-- [starship](https://github.com/starship/starship) — Shell prompt
-- [Waza](https://github.com/tw93/Waza) — AI skill 系列
-- [OpenSpec](https://github.com/Fission-AI/OpenSpec) — 规范驱动开发工作流
+- [安装与模块说明](docs/installation.md)：模块组合、平台差异、配置保护和非交互安装。
+- [工具链管理](docs/toolchain.md)：工具清单、安装、升级和故障排查。
+- [Shell 配置与性能](docs/zsh-optimization.md)：启动路径、自定义方式和性能目标。
+- [Agents 配置说明](.agents/README.md)：目录结构、客户端同步和修改约定。
+- [测试架构说明](docs/testing.md)：Makefile 命令、容器测试范围和调试方法。
 
 ## License
 
-MIT
+[MIT](LICENSE)
