@@ -10,4 +10,9 @@ path=(
   "$HOME/.cargo/bin"
   $path
 )
+
+if [[ -d /opt/homebrew ]]; then
+  path=(/opt/homebrew/bin /opt/homebrew/sbin $path)
+fi
+
 export PATH
