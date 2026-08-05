@@ -33,17 +33,18 @@ uv = "latest"
 "aqua:jesseduffield/lazygit" = "latest"
 
 # AI
+herdr = "latest"
+"npm:agent-browser" = "latest"
 "aqua:anthropics/claude-code" = "latest"
 codex = "latest"
 opencode = "latest"
+"npm:@opencode-ai/cli" = "next"
 pi = "latest"
 "github:can1357/oh-my-pi" = { version = "latest", rename_exe = "omp" }
-herdr = "latest"
-"npm:agent-browser" = "latest"
+"npm:droid" = "latest"
 
 # Spec-driven development
 "npm:@fission-ai/openspec" = "latest"
-"npm:@opencode-ai/cli" = "next"
 
 # Collaboration
 "npm:@larksuite/cli" = "latest"
