@@ -217,6 +217,15 @@
       "skillFolderHash": "694649d8eaa684bc0f48cc3e1558e82d0a08700c",
       "installedAt": "2026-08-03T08:52:58.286Z",
       "updatedAt": "2026-08-03T08:52:58.286Z"
+    },
+    "find-evermind-skills": {
+      "source": "OiAnthony/find-evermind-skills",
+      "sourceType": "github",
+      "sourceUrl": "https://github.com/OiAnthony/find-evermind-skills.git",
+      "skillPath": "skills/find-evermind-skills/SKILL.md",
+      "skillFolderHash": "5759199df17aea8a392e8cf14ac1bf9ef018999d",
+      "installedAt": "2026-08-05T02:16:35.298Z",
+      "updatedAt": "2026-08-05T02:16:35.298Z"
     }
   },
   "dismissed": {
