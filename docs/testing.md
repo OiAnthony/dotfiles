@@ -1,6 +1,6 @@
 # 测试架构说明
 
-仓库使用 ShellCheck 和 Ubuntu 24.04 容器验证 `install.sh`。Makefile 优先使用 Docker，未安装 Docker 时使用 Podman。
+仓库使用 ShellCheck 和 Ubuntu 24.04 Docker 容器验证 `install.sh`。
 
 ## 测试入口
 
@@ -63,8 +63,6 @@ docker run --rm -it dotfiles-test bash
 /opt/dotfiles/scripts/test-install.sh
 /opt/dotfiles/scripts/test-shell.sh
 ```
-
-如果本机使用 Podman，将示例中的 `docker` 替换为 `podman`。
 
 ## 维护测试
 

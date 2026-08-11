@@ -27,6 +27,7 @@
 .agents/skills/develop-pi-tui-extension
 .agents/skills/html-effectiveness
 .agents/skills/rewrite-doc
+.agents/skills/writing-technical-articles
 
 # nowledge-mem metadata (auto-generated, do not commit)
 .agents/skills/.nowledge-mem

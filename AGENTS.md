@@ -11,10 +11,10 @@ Repo-specific operational guidance. For general AI coding behavior, see `.agents
 
 ```
 make lint              # shellcheck only, no Docker needed
-make test              # requires Docker/podman + make build
-make test-idempotent   # requires Docker/podman + make build
-make test-piped        # requires Docker/podman + make build
-make test-root         # requires Docker/podman + make build
+make test              # requires Docker + make build
+make test-idempotent   # requires Docker + make build
+make test-piped        # requires Docker + make build
+make test-root         # requires Docker + make build
 make test-rtk-migration # RTK upgrade migration
 make test-all          # lint → test → test-idempotent → test-piped → test-root → test-rtk-migration
 ```

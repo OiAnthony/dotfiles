@@ -49,6 +49,9 @@ pi = "latest"
 # Collaboration
 "npm:@larksuite/cli" = "latest"
 
+# Containers
+lazydocker = "latest"
+
 # Uncategorized
 
 [settings]

@@ -35,12 +35,11 @@ export CLICOLOR=1
 export LSCOLORS="gxfxcxdxbxegedabagacad"
 
 # Personal tools
-if command -v podman >/dev/null 2>&1 && ! command -v docker >/dev/null 2>&1; then
-  alias docker='podman'
-fi
 alias python='python3'
 alias pip='pip3'
 alias lg='lazygit'
+alias lzg='lazygit'
+alias lzd='lazydocker'
 alias oc='opencode'
 alias pa='prime-agent'
 alias cc='claude --dangerously-skip-permissions'

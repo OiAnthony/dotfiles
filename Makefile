@@ -2,7 +2,7 @@
 
 IMAGE_NAME := dotfiles-test
 
-CONTAINER_RUNTIME := $(shell command -v docker 2>/dev/null || command -v podman 2>/dev/null)
+CONTAINER_RUNTIME := docker
 
 PROJECT_PATH := /opt/dotfiles
 
@@ -12,7 +12,7 @@ CONTAINER_ENV := $(if $(strip $(GITHUB_TOKEN)),--env GITHUB_TOKEN,)
 
 build:
 	@echo "Building container image with $(CONTAINER_RUNTIME)..."
-	@test -n "$(CONTAINER_RUNTIME)" || { echo "Error: Neither docker nor podman found. Install one of them."; exit 1; }
+	@command -v $(CONTAINER_RUNTIME) >/dev/null 2>&1 || { echo "Error: Docker not found. Install Docker."; exit 1; }
 	$(CONTAINER_RUNTIME) build -t $(IMAGE_NAME) .
 
 lint:
