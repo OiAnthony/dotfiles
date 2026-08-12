@@ -43,3 +43,6 @@ openspec/
 
 # Command Code
 .commandcode/
+
+# WorkBuddy
+.workbuddy/
