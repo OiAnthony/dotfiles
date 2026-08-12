@@ -24,9 +24,10 @@ Non-interactive local verification: `CI=true ./install.sh` or `DOTFILES_NO_EXEC=
 ## Architecture
 
 - `mise.toml` symlinks to `~/.config/mise/config.toml`. Editing it changes the user's global mise config. After editing, run `mise install`.
+- `herdr.toml` symlinks to `~/.config/herdr/config.toml` through a chezmoi symlink template. Editing either path changes the Git-tracked source directly; reload Herdr after editing.
 - `install.sh` migrates retired global tool integrations before `_install_mise` changes the active tool config; keep this ordering when removing a mise-managed tool with external hooks.
 - `.agents/` symlinks to `~/.agents`; all files under `.agents/` are intentionally synchronized by that directory symlink, not by chezmoi per-file deployment.
-- `.chezmoiignore` lists files excluded from `chezmoi apply` (README, install.sh, mise.toml, Makefile, Dockerfile, scripts/, docs/, .agents/). These are repo-only — not deployed to `~/`.
+- `.chezmoiignore` lists files excluded from `chezmoi apply` (README, install.sh, mise.toml, herdr.toml, Makefile, Dockerfile, scripts/, docs/, .agents/). These are repo-only — not deployed to `~/`.
 - `.chezmoiscripts/run_after_*.sh.tmpl` regenerates fzf/zoxide/starship integration files and Zsh completion cache on every `chezmoi apply`. Shell startup reads these pre-generated files only.
 
 ## Chezmoi conventions

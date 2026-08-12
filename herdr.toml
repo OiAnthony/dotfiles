@@ -1,0 +1,71 @@
+onboarding = false
+
+[theme]
+name = "catppuccin"
+
+[keys]
+prefix = "ctrl+b"
+
+# Mode actions
+copy_mode = "alt+f"
+resize_mode = "prefix+r"
+edit_scrollback = "prefix+e"
+
+# Direct pane navigation
+focus_pane_left = "ctrl+h"
+focus_pane_down = "ctrl+j"
+focus_pane_up = "ctrl+k"
+focus_pane_right = "ctrl+l"
+
+# Direct tab, workspace, and agent navigation
+previous_tab = ["alt+[", "alt+shift+left"]
+next_tab = ["alt+]", "alt+shift+right"]
+previous_workspace = ["alt+shift+[", "alt+shift+up"]
+next_workspace = ["alt+shift+]", "alt+shift+down"]
+previous_agent = "alt+a"
+next_agent = "alt+s"
+
+# Pane actions
+split_vertical = "alt+d"
+split_horizontal = "alt+shift+d"
+close_pane = "alt+w"
+rename_pane = ""
+fullscreen = "prefix+f"
+
+# Workspace and tab actions
+new_workspace = "alt+n"
+rename_workspace = "alt+shift+n"
+close_workspace = "alt+shift+x"
+new_tab = "alt+t"
+rename_tab = ""
+close_tab = ""
+
+# Global actions
+toggle_sidebar = "prefix+b"
+reload_config = "prefix+shift+r"
+open_notification_target = ""
+detach = "prefix+q"
+
+[[keys.command]]
+key = ["prefix+l", "cmd+shift+g"]
+command = "lazygit"
+type = "pane"
+description = "open lazygit"
+
+[[keys.command]]
+key = "cmd+shift+c"
+type = "shell"
+command = "session=$(\"$HERDR_BIN_PATH\" pane get \"$HERDR_ACTIVE_PANE_ID\" | jq -r '.result.pane.agent_session.value // empty'); test -f \"$session\" && jq -Rr 'fromjson? | select(.type == \"message\" and (.message.role == \"user\" or .message.role == \"assistant\")) | [.message.content[]? | select(.type == \"text\") | .text] | join(\"\\n\") | select(. != \"\")' \"$session\" | { if command -v pbcopy >/dev/null 2>&1; then pbcopy; elif command -v wl-copy >/dev/null 2>&1; then wl-copy; elif command -v xclip >/dev/null 2>&1; then xclip -selection clipboard; else exit 127; fi; } && \"$HERDR_BIN_PATH\" notification show \"copied transcript\""
+description = "copy full transcript"
+
+[ui]
+show_agent_labels_on_pane_borders = true
+prompt_new_tab_name = false
+agent_panel_sort = "spaces"
+
+[ui.toast]
+delivery = "herdr"
+
+[experimental]
+pane_history = true
+switch_ascii_input_source_in_prefix = true
