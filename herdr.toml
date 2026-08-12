@@ -55,7 +55,7 @@ description = "open lazygit"
 [[keys.command]]
 key = "cmd+shift+c"
 type = "shell"
-command = "session=$(\"$HERDR_BIN_PATH\" pane get \"$HERDR_ACTIVE_PANE_ID\" | jq -r '.result.pane.agent_session.value // empty'); test -f \"$session\" && jq -Rr 'fromjson? | select(.type == \"message\" and (.message.role == \"user\" or .message.role == \"assistant\")) | [.message.content[]? | select(.type == \"text\") | .text] | join(\"\\n\") | select(. != \"\")' \"$session\" | { if command -v pbcopy >/dev/null 2>&1; then pbcopy; elif command -v wl-copy >/dev/null 2>&1; then wl-copy; elif command -v xclip >/dev/null 2>&1; then xclip -selection clipboard; else exit 127; fi; } && \"$HERDR_BIN_PATH\" notification show \"copied transcript\""
+command = "\"$HOME/.local/bin/herdr-copy-transcript\" \"$HERDR_ACTIVE_PANE_ID\" | { if command -v pbcopy >/dev/null 2>&1; then pbcopy; elif command -v wl-copy >/dev/null 2>&1; then wl-copy; elif command -v xclip >/dev/null 2>&1; then xclip -selection clipboard; else exit 127; fi; } && \"$HERDR_BIN_PATH\" notification show \"copied transcript\""
 description = "copy full transcript"
 
 [ui]
