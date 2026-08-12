@@ -7,36 +7,36 @@ name = "catppuccin"
 prefix = "ctrl+b"
 
 # Mode actions
-copy_mode = "alt+f"
+copy_mode = ["prefix+[", "alt+f"]
 resize_mode = "prefix+r"
 edit_scrollback = "prefix+e"
 
 # Direct pane navigation
-focus_pane_left = "ctrl+h"
-focus_pane_down = "ctrl+j"
-focus_pane_up = "ctrl+k"
-focus_pane_right = "ctrl+l"
+focus_pane_left = ["prefix+h", "ctrl+h"]
+focus_pane_down = ["prefix+j", "ctrl+j"]
+focus_pane_up = ["prefix+k", "ctrl+k"]
+focus_pane_right = ["prefix+l", "ctrl+l"]
 
 # Direct tab, workspace, and agent navigation
-previous_tab = ["alt+[", "alt+shift+left"]
-next_tab = ["alt+]", "alt+shift+right"]
+previous_tab = ["prefix+p", "alt+[", "alt+shift+left"]
+next_tab = ["prefix+n", "alt+]", "alt+shift+right"]
 previous_workspace = ["alt+shift+[", "alt+shift+up"]
 next_workspace = ["alt+shift+]", "alt+shift+down"]
 previous_agent = "alt+a"
 next_agent = "alt+s"
 
 # Pane actions
-split_vertical = "alt+d"
-split_horizontal = "alt+shift+d"
-close_pane = "alt+w"
+split_vertical = ["prefix+v", "alt+d"]
+split_horizontal = ["prefix+minus", "alt+shift+d"]
+close_pane = ["prefix+x", "alt+w"]
 rename_pane = ""
-fullscreen = "prefix+f"
+fullscreen = ["prefix+z", "prefix+f"]
 
 # Workspace and tab actions
-new_workspace = "alt+n"
-rename_workspace = "alt+shift+n"
-close_workspace = "alt+shift+x"
-new_tab = "alt+t"
+new_workspace = ["prefix+shift+n", "alt+n"]
+rename_workspace = ["prefix+shift+w", "alt+shift+n"]
+close_workspace = ["prefix+shift+d", "alt+shift+x"]
+new_tab = ["prefix+c", "alt+t"]
 rename_tab = ""
 close_tab = ""
 
@@ -47,7 +47,7 @@ open_notification_target = ""
 detach = "prefix+q"
 
 [[keys.command]]
-key = ["prefix+l", "cmd+shift+g"]
+key = "cmd+shift+g"
 command = "lazygit"
 type = "pane"
 description = "open lazygit"
