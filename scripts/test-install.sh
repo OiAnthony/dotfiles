@@ -172,6 +172,20 @@ main() {
 
     log_info "Checking .agents symlink..."
     check_symlink "$HOME/.agents" "$PROJECT_ROOT/.agents" || ((failed += 1))
+    check_file "$PROJECT_ROOT/.agents/AGENTS.md" || ((failed += 1))
+
+    log_info "Checking shell-only dotagents guard..."
+    local empty_agents_home
+    local guard_output
+    empty_agents_home=$(mktemp -d)
+    guard_output=$(HOME="$empty_agents_home" sh "$PROJECT_ROOT/.chezmoiscripts/run_after_30-link-agents.sh.tmpl")
+    if [[ "$guard_output" == *"~/.agents is not initialized"* ]] && [[ ! -e "$empty_agents_home/.agents" ]]; then
+        log_info "✓ shell-only guard leaves ~/.agents untouched"
+    else
+        log_error "✗ shell-only guard created or synchronized ~/.agents"
+        ((failed += 1))
+    fi
+    rm -rf "$empty_agents_home"
 
     log_info "Checking dotagents client symlinks..."
     # dotagents links ~/.agents/<name> into each AI client dir via relative

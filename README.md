@@ -24,7 +24,7 @@
 | --- | --- |
 | 开发工具 | [mise](https://mise.jdx.dev/) 统一管理 Node.js、Bun、Go、Python、Java、常用 CLI 和 AI 开发工具 |
 | Shell | [chezmoi](https://www.chezmoi.io/) 部署 Zsh、Git、Starship、补全和插件配置，同时保留机器专属配置入口 |
-| Coding Agent | `~/.agents` 统一提供 `AGENTS.md`、Agent Skills、命令和 MCP 配置，再同步到支持的 AI 客户端 |
+| Coding Agent | 独立的 [`.agents`](https://github.com/OiAnthony/.agents) 仓库统一提供规则、Skills、命令和 MCP 配置；本仓库固定其版本并完成安装 |
 
 安装脚本支持重复执行。macOS 需要使用普通用户，Linux 同时支持普通用户和 `root`。
 
@@ -55,13 +55,13 @@ mise doctor
 curl -fsSL https://raw.githubusercontent.com/OiAnthony/dotfiles/main/install.sh | bash -s -- --agents
 ```
 
-该命令会把仓库的 `.agents/` 链接到 `~/.agents`。如果环境中已有 `bunx`，还会通过 dotagents 同步到支持的 AI 客户端；没有 `bunx` 时只跳过客户端同步，不影响 `~/.agents` 软链接。
+该命令会初始化仓库固定的 `.agents` submodule，再将其链接到 `~/.agents`。如果环境中已有 `bunx`，还会通过 dotagents 同步到支持的 AI 客户端；没有 `bunx` 时只跳过客户端同步，不影响 `~/.agents` 软链接。
 
 模块组合、平台行为和已有配置的处理方式参见[安装与模块说明](docs/installation.md)。
 
 ## Coding Agent 工作流
 
-`.agents/AGENTS.md` 是工作流的基础：它约束 Agent 如何确定范围、收集证据、实施修改、验证结果和汇报结论。全局规则会与项目自己的 `AGENTS.md` 叠加，项目规则负责补充当前代码库的技术和业务边界。
+`.agents/AGENTS.md` 是工作流的基础：它约束 Agent 如何确定范围、收集证据、实施修改、验证结果和汇报结论。该目录是固定 commit 的 submodule；配置修改在独立 `.agents` clone 中完成，本仓库只提升已验证的 pointer。全局规则会与项目自己的 `AGENTS.md` 叠加，项目规则负责补充当前代码库的技术和业务边界。
 
 `.agents/skills/` 在此基础上提供面向具体任务的工作流：
 

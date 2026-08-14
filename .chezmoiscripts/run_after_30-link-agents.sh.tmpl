@@ -9,6 +9,11 @@ set -eu
 PATH="${HOME}/.local/share/mise/shims:${HOME}/.bun/bin:${HOME}/.local/bin:/opt/homebrew/bin:/usr/bin:/bin"
 export PATH
 
+if [ ! -f "${HOME}/.agents/AGENTS.md" ]; then
+  echo "skip: ~/.agents is not initialized; dotagents symlinks left untouched"
+  exit 0
+fi
+
 if ! command -v bunx >/dev/null 2>&1; then
   echo "skip: bunx not on PATH (mise bun not installed); dotagents symlinks left untouched"
   exit 0

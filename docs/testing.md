@@ -12,6 +12,7 @@ make test-idempotent    # 重复安装
 make test-piped         # curl 管道安装路径
 make test-root          # Linux root 安装
 make test-rtk-migration # 旧 RTK 集成迁移
+make test-agents-submodule # fresh clone 初始化和 dirty submodule 拒绝
 make test-all           # 聚合检查，不包含 test-shell
 ```
 
@@ -23,7 +24,7 @@ scripts/*.sh
 dot_local/bin/executable_benchmark-zsh
 ```
 
-`make test-all` 当前包含 `lint`、`test`、`test-idempotent`、`test-piped`、`test-root` 和 `test-rtk-migration`。需要验证完整交互式 Zsh 初始化时，应另外运行 `make test-shell`。
+`make test-all` 当前包含 `lint`、`test-agents-submodule`、`test`、`test-idempotent`、`test-piped`、`test-root` 和 `test-rtk-migration`。需要验证完整交互式 Zsh 初始化时，应另外运行 `make test-shell`。
 
 ## 容器测试覆盖什么
 
@@ -32,6 +33,7 @@ Dockerfile 基于 Ubuntu 24.04，并创建普通用户 `testuser`。不同入口
 - mise 工具和 runtime 安装；
 - chezmoi 部署的 Zsh、Git 与 Starship 配置；
 - `~/.config/mise/config.toml` 和 `~/.agents` 软链接；
+- 打包工作树中的 Agent 配置和 shell-only 同步保护；
 - Bun、pnpm、mise shims 与 Zsh `PATH`；
 - fzf 延迟加载和 Shell completion；
 - 普通用户、Linux `root`、重复安装和管道安装路径；
@@ -75,5 +77,6 @@ docker run --rm -it dotfiles-test bash
 | 重复执行行为 | `scripts/test-idempotent.sh` |
 | 管道安装和仓库克隆 | `scripts/test-piped-install.sh` |
 | RTK 清理逻辑 | `scripts/test-rtk-migration.sh` |
+| `.agents` submodule 初始化与 dirty 状态 | `scripts/test-agents-submodule.sh` |
 
 修改 Dockerfile 会使镜像构建缓存失效。下载失败时先设置 `GITHUB_TOKEN` 或网络代理，再单独运行失败的测试入口查看完整日志。

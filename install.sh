@@ -39,7 +39,7 @@ echo "🚀 开始安装开发环境..."
 echo "   模块: tools=$INSTALL_TOOLS shell=$INSTALL_SHELL agents=$INSTALL_AGENTS"
 
 # ---- 仓库检测与克隆 ----
-if [[ ! -f "$SCRIPT_DIR/mise.toml" ]] || [[ ! -d "$SCRIPT_DIR/.agents" ]]; then
+if [[ ! -f "$SCRIPT_DIR/mise.toml" ]]; then
   echo "📥 检测到脚本不在仓库目录中，正在克隆仓库..."
   REPO_URL="https://github.com/OiAnthony/dotfiles.git"
   INSTALL_DIR="$HOME/.dotfiles"
@@ -440,6 +440,24 @@ _install_agents() {
   $INSTALL_AGENTS || return 0
   echo ""
   echo "── AI 配置"
+
+  echo "  agents submodule..."
+  if git -C "$REPO_DIR" ls-files --error-unmatch .agents >/dev/null 2>&1; then
+    if [[ -e "$REPO_DIR/.agents/.git" ]] && \
+       [[ -n "$(git -C "$REPO_DIR/.agents" status --porcelain)" ]]; then
+      echo "  agents submodule... FAILED (working tree has local changes)"
+      return 1
+    fi
+    if ! git -C "$REPO_DIR" submodule update --init --depth 1 -- .agents; then
+      echo "  agents submodule... FAILED"
+      return 1
+    fi
+  fi
+  if [[ ! -f "$REPO_DIR/.agents/AGENTS.md" ]]; then
+    echo "  agents submodule... FAILED (AGENTS.md not found)"
+    return 1
+  fi
+  echo "  agents submodule... ok"
 
   if [[ -L "$HOME/.agents" ]] || [[ ! -e "$HOME/.agents" ]]; then
     ln -sfn "$REPO_DIR/.agents" "$HOME/.agents"

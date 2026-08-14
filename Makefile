@@ -1,4 +1,4 @@
-.PHONY: build lint test test-shell test-idempotent test-piped test-root test-rtk-migration test-all clean
+.PHONY: build lint test test-shell test-idempotent test-piped test-root test-rtk-migration test-agents-submodule test-all clean
 
 IMAGE_NAME := dotfiles-test
 
@@ -32,6 +32,10 @@ test-rtk-migration:
 	@echo "Running RTK migration test..."
 	./scripts/test-rtk-migration.sh
 
+test-agents-submodule:
+	@echo "Running Agents submodule test..."
+	./scripts/test-agents-submodule.sh
+
 test-idempotent: build
 	@echo "Running idempotent test..."
 	$(CONTAINER_RUNTIME) run --rm $(CONTAINER_ENV) -u testuser $(IMAGE_NAME) $(PROJECT_PATH)/scripts/test-idempotent.sh
@@ -44,7 +48,7 @@ test-root: build
 	@echo "Running integration test (root)..."
 	$(CONTAINER_RUNTIME) run --rm $(CONTAINER_ENV) --env HOME=/root --workdir /root -u 0 $(IMAGE_NAME) $(PROJECT_PATH)/scripts/test-install.sh
 
-test-all: lint test test-idempotent test-piped test-root test-rtk-migration
+test-all: lint test-agents-submodule test test-idempotent test-piped test-root test-rtk-migration
 	@echo "All tests passed!"
 
 clean:

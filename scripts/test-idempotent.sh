@@ -29,6 +29,7 @@ main() {
     local core_md5
     local config_shared_md5
     local starship_md5
+    local agents_md5
 
     zshrc_md5=$(md5sum "$HOME/.zshrc" | awk '{print $1}')
     zshenv_md5=$(md5sum "$HOME/.zshenv" | awk '{print $1}')
@@ -36,6 +37,7 @@ main() {
     core_md5=$(md5sum "$HOME/.config/zsh/core.zsh" | awk '{print $1}')
     config_shared_md5=$(md5sum "$HOME/.config/git/config-shared" | awk '{print $1}')
     starship_md5=$(md5sum "$HOME/.config/starship.toml" | awk '{print $1}')
+    agents_md5=$(md5sum "$HOME/.agents/AGENTS.md" | awk '{print $1}')
 
     log_info "State recorded:"
     log_info "  .zshrc md5: $zshrc_md5"
@@ -44,6 +46,7 @@ main() {
     log_info "  core.zsh md5: $core_md5"
     log_info "  config-shared md5: $config_shared_md5"
     log_info "  starship.toml md5: $starship_md5"
+    log_info "  AGENTS.md md5: $agents_md5"
 
     log_info "Running install.sh second time..."
     if ! ./install.sh; then
@@ -60,6 +63,7 @@ main() {
     local core_md5_after
     local config_shared_md5_after
     local starship_md5_after
+    local agents_md5_after
 
     zshrc_md5_after=$(md5sum "$HOME/.zshrc" | awk '{print $1}')
     zshenv_md5_after=$(md5sum "$HOME/.zshenv" | awk '{print $1}')
@@ -67,6 +71,7 @@ main() {
     core_md5_after=$(md5sum "$HOME/.config/zsh/core.zsh" | awk '{print $1}')
     config_shared_md5_after=$(md5sum "$HOME/.config/git/config-shared" | awk '{print $1}')
     starship_md5_after=$(md5sum "$HOME/.config/starship.toml" | awk '{print $1}')
+    agents_md5_after=$(md5sum "$HOME/.agents/AGENTS.md" | awk '{print $1}')
 
     if [[ "$zshrc_md5" == "$zshrc_md5_after" ]]; then
         log_info "✓ .zshrc unchanged"
@@ -107,6 +112,13 @@ main() {
         log_info "✓ starship.toml unchanged"
     else
         log_error "✗ starship.toml changed"
+        ((failed += 1))
+    fi
+
+    if [[ "$agents_md5" == "$agents_md5_after" ]]; then
+        log_info "✓ AGENTS.md unchanged"
+    else
+        log_error "✗ AGENTS.md changed"
         ((failed += 1))
     fi
 
