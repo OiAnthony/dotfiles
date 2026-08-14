@@ -26,6 +26,7 @@ uv = "latest"
 "aqua:BurntSushi/ripgrep" = "latest"
 "aqua:jqlang/jq" = "latest"
 "aqua:neovim/neovim" = "latest"
+"aqua:ClementTsang/bottom" = "latest"
 
 # Git tooling
 "aqua:cli/cli" = "latest" # gh

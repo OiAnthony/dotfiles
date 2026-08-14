@@ -17,7 +17,7 @@ return {
     },
     -- Diagnostics configuration (for vim.diagnostics.config({...})) when diagnostics are on
     diagnostics = {
-      virtual_text = true,
+      virtual_text = { severity = { min = vim.diagnostic.severity.WARN } },
       underline = true,
     },
     -- vim options can be configured here
@@ -26,7 +26,7 @@ return {
         relativenumber = true, -- sets vim.opt.relativenumber
         number = true, -- sets vim.opt.number
         spell = false, -- sets vim.opt.spell
-        signcolumn = "auto", -- sets vim.opt.signcolumn to auto
+        signcolumn = "yes", -- always reserve space for diagnostic and Git signs
         wrap = false, -- sets vim.opt.wrap
       },
       g = { -- vim.g.<key>
@@ -45,9 +45,9 @@ return {
         -- mappings seen under group name "Buffer"
         ["<Leader>bD"] = {
           function()
-            require("astroui.status.heirline").buffer_picker(
-              function(bufnr) require("astrocore.buffer").close(bufnr) end
-            )
+            require("astroui.status.heirline").buffer_picker(function(bufnr)
+              require("astrocore.buffer").close(bufnr)
+            end)
           end,
           desc = "Pick to close",
         },
