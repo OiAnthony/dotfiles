@@ -47,7 +47,7 @@ curl -fsSL https://raw.githubusercontent.com/OiAnthony/dotfiles/main/install.sh 
 | 参数 | 安装内容 | 关键行为 |
 | --- | --- | --- |
 | `--tools` | mise、`mise.toml` 中的工具和 pnpm | macOS 还会安装字体；Linux 会补齐基础系统包 |
-| `--shell` | chezmoi、Zsh、Git、Starship、插件和生成脚本 | 可以独立安装，不要求先安装 `--tools` |
+| `--shell` | chezmoi、Zsh、Git、Starship、Neovim 配置、插件和生成脚本 | 可以独立安装，不要求先安装 `--tools` |
 | `--agents` | `~/.agents` 软链接和客户端配置 | 客户端同步需要 `bunx`，不可用时会跳过同步 |
 
 在仓库目录中也可以直接执行：

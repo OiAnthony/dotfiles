@@ -159,7 +159,16 @@ main() {
     check_file "$HOME/.gitconfig" || ((failed += 1))
     check_file "$HOME/.config/zsh/core.zsh" || ((failed += 1))
     check_file "$HOME/.config/starship.toml" || ((failed += 1))
+    check_file "$HOME/.config/nvim/init.lua" || ((failed += 1))
     check_symlink "$HOME/.config/herdr/config.toml" "$PROJECT_ROOT/herdr.toml" || ((failed += 1))
+
+    log_info "Checking Neovim startup..."
+    if nvim --headless '+qa'; then
+        log_info "✓ Neovim starts with the deployed config"
+    else
+        log_error "✗ Neovim failed to start with the deployed config"
+        ((failed += 1))
+    fi
 
     log_info "Checking .agents symlink..."
     check_symlink "$HOME/.agents" "$PROJECT_ROOT/.agents" || ((failed += 1))
