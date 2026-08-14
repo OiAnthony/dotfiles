@@ -32,6 +32,9 @@
 # nowledge-mem metadata (auto-generated, do not commit)
 .agents/skills/.nowledge-mem
 
+# CCloud internal skill
+.agents/skills/ccloud*/
+
 # Python (skills contain Python scripts)
 __pycache__/
 *.py[codz]
