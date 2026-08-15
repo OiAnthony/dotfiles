@@ -1,6 +1,6 @@
 # 工具链管理
 
-`tools` 模块使用 [mise](https://mise.jdx.dev/) 管理语言运行时、CLI 和 AI 开发工具。[`mise.toml`](../mise.toml) 是工具清单的单一来源，安装脚本会将它链接到 `~/.config/mise/config.toml`。
+`tools` 模块使用 [mise](https://mise.jdx.dev/) 管理语言运行时和大部分 CLI。[`mise.toml`](../mise.toml) 是 mise 工具清单，安装脚本会将它链接到 `~/.config/mise/config.toml`。OpenCode 2 beta 是例外，由安装脚本通过 Bun 全局安装。
 
 ## 工具清单
 
@@ -9,10 +9,12 @@
 | 语言与包管理 | Node.js LTS、Bun、Go、Python 3.14、Java 21、uv、pnpm |
 | Shell 与终端 | Starship、zoxide、yazi、fzf、fd、ripgrep、jq、Neovim |
 | Git | GitHub CLI、git-delta、lazygit |
-| AI 开发 | Claude Code、Codex、OpenCode、pi、oh-my-pi、Herdr、agent-browser |
+| AI 开发 | Claude Code、Codex、OpenCode 2、pi、oh-my-pi、Herdr、agent-browser |
 | 规范与协作 | OpenSpec、Lark CLI |
 
 工具默认安装 `latest` 或指定的主版本。mise 配置设置了 `minimum_release_age = "24h"`，避免刚发布的版本立即进入日常环境。
+
+OpenCode 2 仍处于 beta。官方尚不支持 mise，因此安装脚本执行 `bun install -g --trust @opencode-ai/cli@next`，以允许选择平台原生二进制的 postinstall。可执行文件名为 `opencode2`，Shell 快捷命令 `oc` 指向该命令。OpenCode 1 的 `opencode` 安装和实验性环境变量已移除。
 
 ## 安装与升级
 
@@ -26,6 +28,12 @@ mise upgrade # 升级允许更新的工具
 
 ```bash
 mise upgrade <tool> --minimum-release-age 0
+```
+
+OpenCode 2 独立升级：
+
+```bash
+bun install -g --trust @opencode-ai/cli@next
 ```
 
 ## 添加工具

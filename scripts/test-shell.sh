@@ -7,6 +7,17 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 log_info()  { printf '[INFO] %s\n' "$*"; }
 log_error() { printf '[ERROR] %s\n' "$*" >&2; }
 
+run_in_pty() {
+    if [[ "$(uname -s)" == "Darwin" ]]; then
+        script -q /dev/null "$@"
+        return
+    fi
+
+    local command
+    printf -v command '%q ' "$@"
+    script -qec "$command" /dev/null
+}
+
 if ! command -v mise >/dev/null 2>&1; then
     log_info "Installing tools and shell configuration..."
     CI=true "$PROJECT_ROOT/install.sh" --tools --shell
@@ -19,9 +30,8 @@ zsh -n "$HOME/.zshenv" "$HOME/.zprofile" "$HOME/.zshrc" "$HOME/.config/zsh/core.
 
 log_info "Checking complete interactive initialization..."
 shell_state="$(
-    script -qec \
-        "env TERM=xterm-256color zsh -lic '_fzf_lazy_load; print -r -- shell-ok:\$ZSH_CONFIG_DIR node:\$(node --version) bun:\$(bun --version) pnpm:\$(pnpm --version) fzf:\$fzf_default_completion tab:\$(bindkey \"^I\")'" \
-        /dev/null
+    run_in_pty env TERM=xterm-256color zsh -lic \
+        '_fzf_lazy_load; print -r -- shell-ok:$ZSH_CONFIG_DIR node:$(node --version) bun:$(bun --version) pnpm:$(pnpm --version) fzf:$fzf_default_completion tab:$(bindkey "^I")'
 )"
 shell_state="${shell_state//$'\r'/}"
 printf '%s\n' "$shell_state"
@@ -32,6 +42,7 @@ grep -q 'bun:' <<<"$shell_state"
 grep -q 'pnpm:' <<<"$shell_state"
 grep -q 'fzf:expand-or-complete' <<<"$shell_state"
 grep -q 'fzf-completion' <<<"$shell_state"
+env TERM=xterm-256color zsh -lic '[[ "$(alias oc)" == "oc=opencode2" ]]'
 
 log_info "Checking mise runtime resolution..."
 mise which node >/dev/null
@@ -41,15 +52,15 @@ mise which codex >/dev/null
 mise exec -- node -e 'process.exit(process.version.startsWith("v") ? 0 : 1)'
 mise exec -- bun --version >/dev/null
 mise exec -- python -c 'import sys; raise SystemExit(sys.version_info < (3, 14))'
+command -v opencode2 >/dev/null
+opencode2 --version | grep -q '^opencode2 v'
 
 log_info "Measuring full interactive startup..."
 timings="$(mktemp)"
 trap 'rm -f "$timings"' EXIT
 for _ in $(seq 1 20); do
-    script -qec \
-        "/usr/bin/time -f 'startup=%e' env TERM=xterm-256color zsh -lic exit" \
-        /dev/null
-done | sed -n 's/.*startup=\([0-9.]*\).*/\1/p' >"$timings"
+    run_in_pty /usr/bin/time -p env TERM=xterm-256color zsh -lic exit
+done | sed -n 's/.*real[[:space:]]\{1,\}\([0-9.]*\).*/\1/p' >"$timings"
 
 result="$(
     sort -n "$timings" | awk '

@@ -164,6 +164,33 @@ _migrate_rtk() {
   fi
 }
 
+_migrate_opencode_v2() {
+  local legacy_bin="$HOME/.opencode/bin/opencode"
+
+  if [[ -f "$legacy_bin" ]]; then
+    rm -f -- "$legacy_bin" || {
+      echo "  OpenCode v1 standalone binary removal... FAILED"
+      return 1
+    }
+    echo "  OpenCode v1 standalone binary removal... ok"
+  fi
+
+  if mise uninstall --all opencode >/dev/null 2>&1; then
+    echo "  OpenCode v1 mise installation removal... ok"
+  elif mise ls opencode 2>/dev/null | grep -q '[0-9]'; then
+    echo "  OpenCode v1 mise installation removal... FAILED"
+    return 1
+  fi
+
+  mise uninstall --all "npm:@opencode-ai/cli" >/dev/null 2>&1 || true
+  if ! rm -rf -- \
+    "$HOME/.local/share/mise/installs/opencode" \
+    "$HOME/.local/share/mise/installs/npm-opencode-ai-cli"; then
+    echo "  Stale OpenCode mise installation cleanup... FAILED"
+    return 1
+  fi
+}
+
 _install_mise() {
   if ! command -v mise &>/dev/null; then
     curl -fsSL https://mise.run | sh >/dev/null 2>&1
@@ -192,6 +219,8 @@ _install_mise() {
   fi
   ln -sf "$REPO_DIR/mise.toml" "$mise_cfg"
 
+  _migrate_opencode_v2 || exit 1
+
   (cd "$HOME" && mise use -g bun@latest) >/dev/null 2>&1 || {
     echo "  bun... FAILED"
     exit 1
@@ -199,7 +228,14 @@ _install_mise() {
   mise install -q 2>/dev/null || {
     echo "  mise install... partial (网络受限或限流，可设 https_proxy / GITHUB_TOKEN 重试)"
   }
+
+  export PATH="$HOME/.bun/bin:$HOME/.local/share/mise/shims:$PATH"
+  bun install -g --trust @opencode-ai/cli@next >/dev/null 2>&1 || {
+    echo "  OpenCode 2... FAILED"
+    exit 1
+  }
   echo "  mise + Bun + 工具链... ok"
+  echo "  OpenCode 2... ok"
 }
 
 _install_fonts_macos() {

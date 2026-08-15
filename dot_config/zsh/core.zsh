@@ -40,7 +40,7 @@ alias pip='pip3'
 alias lg='lazygit'
 alias lzg='lazygit'
 alias lzd='lazydocker'
-alias oc='opencode'
+alias oc='opencode2'
 alias pa='prime-agent'
 alias cc='claude --dangerously-skip-permissions'
 alias cx='codex --dangerously-bypass-approvals-and-sandbox'
@@ -246,12 +246,6 @@ path=(
 )
 export PATH
 
-# Coding Agent Experimental Flags
-export OPENCODE_EXPERIMENTAL_PLAN_MODE=1
-export OPENCODE_EXPERIMENTAL_MARKDOWN=1
-export OPENCODE_EXPERIMENTAL_LSP_TOOL=1
-export OPENCODE_EXPERIMENTAL_LSP_TY=1
-export OPENCODE_ENABLE_QUESTION_TOOL=1
 export CLAUDE_CODE_NEW_INIT=1
 
 for integration in zoxide starship; do

@@ -152,6 +152,9 @@ main() {
         check_symlink "$HOME/.config/mise/config.toml" "$PROJECT_ROOT/mise.toml" || ((failed += 1))
     fi
 
+    log_info "Checking Bun-managed OpenCode 2..."
+    check_command opencode2 || ((failed += 1))
+
     log_info "Checking chezmoi-deployed dotfiles..."
     check_file "$HOME/.zshrc" || ((failed += 1))
     check_file "$HOME/.zshenv" || ((failed += 1))
