@@ -44,6 +44,13 @@ grep -q 'fzf:expand-or-complete' <<<"$shell_state"
 grep -q 'fzf-completion' <<<"$shell_state"
 env TERM=xterm-256color zsh -lic '[[ "$(alias oc)" == "oc=opencode2" ]]'
 
+log_info "Checking Starship scan timeout..."
+scan_timeout="$(starship print-config | awk '$1 == "scan_timeout" { print $3; exit }')"
+if [[ "$scan_timeout" != "50" ]]; then
+    log_error "Expected Starship scan_timeout=50, got ${scan_timeout:-missing}"
+    exit 1
+fi
+
 log_info "Checking mise runtime resolution..."
 mise which node >/dev/null
 mise which bun >/dev/null

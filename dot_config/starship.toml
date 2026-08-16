@@ -1,5 +1,8 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
+# Allow brief filesystem latency spikes while Starship detects the current directory.
+scan_timeout = 50
+
 format = """
 [](red)\
 $os\
