@@ -75,3 +75,4 @@ delivery = "herdr"
 [experimental]
 pane_history = true
 switch_ascii_input_source_in_prefix = true
+kitty_graphics = true
