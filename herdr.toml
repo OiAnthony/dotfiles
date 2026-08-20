@@ -72,6 +72,9 @@ agent_panel_sort = "spaces"
 [ui.toast]
 delivery = "herdr"
 
+[advanced]
+scrollback_limit_bytes = 100000000
+
 [experimental]
 pane_history = true
 switch_ascii_input_source_in_prefix = true
