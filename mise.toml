@@ -32,6 +32,7 @@ uv = "latest"
 "aqua:cli/cli" = "latest" # gh
 "aqua:dandavison/delta" = "latest" # git-delta
 "aqua:jesseduffield/lazygit" = "latest"
+"npm:git-open" = "latest"
 
 # AI
 herdr = "latest"

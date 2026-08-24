@@ -8,13 +8,21 @@
 | --- | --- |
 | 语言与包管理 | Node.js LTS、Bun、Go、Python 3.14、Java 21、uv、pnpm |
 | Shell 与终端 | Starship、zoxide、yazi、fzf、fd、ripgrep、jq、Neovim |
-| Git | GitHub CLI、git-delta、lazygit |
+| Git | GitHub CLI、git-open、git-delta、lazygit |
 | AI 开发 | Claude Code、Codex、OpenCode 2、pi、oh-my-pi、Herdr、agent-browser |
 | 规范与协作 | OpenSpec、Lark CLI |
 
 工具默认安装 `latest` 或指定的主版本。mise 配置设置了 `minimum_release_age = "24h"`，避免刚发布的版本立即进入日常环境。
 
 OpenCode 2 仍处于 beta。官方尚不支持 mise，因此安装脚本执行 `bun install -g --trust @opencode-ai/cli@next`，以允许选择平台原生二进制的 postinstall。可执行文件名为 `opencode2`，Shell 快捷命令 `oc` 指向该命令。OpenCode 1 的 `opencode` 安装和实验性环境变量已移除。
+
+`git-open` 根据当前仓库的 remote 在默认浏览器中打开对应页面，支持 GitHub、GitLab、Bitbucket 和自建 GitLab。在仓库任意子目录运行：
+
+```bash
+git open          # 打开当前分支
+git open --commit # 打开当前 commit
+git open --print  # 只输出 URL
+```
 
 ## 安装与升级
 

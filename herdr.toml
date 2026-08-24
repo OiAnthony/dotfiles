@@ -68,6 +68,7 @@ description = "copy full transcript"
 show_agent_labels_on_pane_borders = true
 prompt_new_tab_name = false
 agent_panel_sort = "spaces"
+status_indicators = "dots"
 
 [ui.toast]
 delivery = "herdr"
