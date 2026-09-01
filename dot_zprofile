@@ -12,4 +12,8 @@ if [[ -d /opt/homebrew ]]; then
 fi
 
 path+=("$HOME/Library/Application Support/JetBrains/Toolbox/scripts")
+
+# macOS /etc/zprofile runs path_helper after ~/.zshenv and moves system paths
+# ahead of user paths. Restore mise precedence without spawning mise at login.
+path=("$HOME/.local/share/mise/shims" "$HOME/.local/bin" $path)
 export PATH FPATH

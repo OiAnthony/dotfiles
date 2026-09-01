@@ -52,6 +52,16 @@ if [[ "$scan_timeout" != "50" ]]; then
 fi
 
 log_info "Checking mise runtime resolution..."
+env TERM=xterm-256color zsh -lic '
+    expected="$HOME/.local/share/mise/shims"
+    for tool in java node bun go; do
+        actual="$(command -v "$tool")"
+        if [[ "$actual" != "$expected/$tool" ]]; then
+            print -u2 "Expected $tool to resolve through mise shims, got $actual"
+            exit 1
+        fi
+    done
+'
 mise which node >/dev/null
 mise which bun >/dev/null
 mise which python >/dev/null

@@ -6,9 +6,11 @@
 
 ```text
 ~/.zshenv    → 设置 mise、pnpm、Cargo 等基础 PATH
-~/.zprofile  → 设置 macOS Homebrew 登录环境
-~/.zshrc     → 加载 ~/.config/zsh/core.zsh 和可选的私有环境变量
+~/.zprofile  → 设置 macOS Homebrew 登录环境，并在 path_helper 后恢复 mise 优先级
+~/.zshrc     → 加载 ~/.config/zsh/core.zsh，最终固定 mise shims 优先级，再加载可选的私有环境变量
 ```
+
+macOS 的 `/etc/zprofile` 会在 `~/.zshenv` 之后运行 `path_helper`，将系统目录移到用户目录之前。因此 `~/.zprofile` 必须重新 prepend mise shims；交互式配置随后再次固定 `mise shims → Bun globals → Go globals → Homebrew/system` 的顺序。`private/env.zsh` 最后加载，机器级配置仍可显式覆盖该顺序。
 
 共享配置包括：
 
