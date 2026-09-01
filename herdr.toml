@@ -27,16 +27,16 @@ next_agent = "alt+s"
 
 # Pane actions
 split_vertical = ["prefix+v", "alt+d"]
-split_horizontal = ["prefix+minus", "alt+shift+d"]
+split_horizontal = ["alt+shift+d"]
 close_pane = ["prefix+x", "alt+w"]
 rename_pane = ""
-fullscreen = ["prefix+z", "prefix+f"]
+fullscreen = "prefix+f"
 
 # Workspace and tab actions
 new_workspace = ["prefix+shift+n", "alt+n"]
 rename_workspace = ["prefix+shift+w", "alt+shift+n"]
 close_workspace = ["prefix+shift+d", "alt+shift+x"]
-new_tab = ["prefix+c", "alt+t"]
+new_tab = "alt+t"
 rename_tab = ""
 close_tab = ""
 
@@ -57,6 +57,24 @@ key = "cmd+shift+e"
 command = "nvim"
 type = "pane"
 description = "open nvim"
+
+[[keys.command]]
+key = "prefix+c"
+command = "code ."
+type = "shell"
+description = "open directory in VS Code"
+
+[[keys.command]]
+key = "prefix+z"
+command = "zed ."
+type = "shell"
+description = "open directory in Zed"
+
+[[keys.command]]
+key = "prefix+g"
+command = "git open"
+type = "shell"
+description = "open repository in browser"
 
 [[keys.command]]
 key = "cmd+shift+c"
