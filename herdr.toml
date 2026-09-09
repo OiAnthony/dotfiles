@@ -3,47 +3,54 @@ onboarding = false
 [theme]
 name = "catppuccin"
 
+[terminal]
+kitty_graphics = true
+
 [keys]
 prefix = "ctrl+b"
 
 # Mode actions
-copy_mode = ["prefix+[", "alt+f"]
+copy_mode = "prefix+["
 resize_mode = "prefix+r"
 edit_scrollback = "prefix+e"
 
 # Direct pane navigation
-focus_pane_left = ["prefix+h", "ctrl+h"]
-focus_pane_down = ["prefix+j", "ctrl+j"]
-focus_pane_up = ["prefix+k", "ctrl+k"]
-focus_pane_right = ["prefix+l", "ctrl+l"]
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+cycle_pane_previous = ["prefix+shift+tab", "alt+["]
+cycle_pane_next = ["prefix+tab", "alt+]"]
 
 # Direct tab, workspace, and agent navigation
-previous_tab = ["prefix+p", "alt+[", "alt+shift+left"]
-next_tab = ["prefix+n", "alt+]", "alt+shift+right"]
-previous_workspace = ["alt+shift+[", "alt+shift+up"]
-next_workspace = ["alt+shift+]", "alt+shift+down"]
+previous_tab = ["prefix+p", "alt+shift+["]
+next_tab = ["prefix+n", "alt+shift+]"]
+switch_tab = ["prefix+1..9", "alt+1..9"]
+previous_workspace = "alt+shift+up"
+next_workspace = "alt+shift+down"
 previous_agent = "alt+a"
 next_agent = "alt+s"
+focus_agent = "prefix+alt+1..9"
 
 # Pane actions
 split_vertical = ["prefix+v", "alt+d"]
-split_horizontal = ["alt+shift+d"]
+split_horizontal = ["prefix+minus", "alt+shift+d"]
 close_pane = ["prefix+x", "alt+w"]
-rename_pane = ""
-fullscreen = "prefix+f"
+rename_pane = "prefix+shift+p"
+zoom = ["prefix+f", "alt+shift+enter", "alt+shift+f"]
 
 # Workspace and tab actions
 new_workspace = ["prefix+shift+n", "alt+n"]
 rename_workspace = ["prefix+shift+w", "alt+shift+n"]
-close_workspace = ["prefix+shift+d", "alt+shift+x"]
+close_workspace = ["prefix+shift+d", "alt+shift+w"]
 new_tab = "alt+t"
-rename_tab = ""
-close_tab = ""
+rename_tab = "prefix+shift+t"
+close_tab = "prefix+shift+x"
 
 # Global actions
 toggle_sidebar = "prefix+b"
 reload_config = "prefix+shift+r"
-open_notification_target = ""
+open_notification_target = "prefix+o"
 detach = "prefix+q"
 
 [[keys.command]]
@@ -63,6 +70,12 @@ key = "prefix+c"
 command = "code ."
 type = "shell"
 description = "open directory in VS Code"
+
+[[keys.command]]
+key = "prefix+i"
+command = "idea ."
+type = "shell"
+description = "open directory in IntelliJ IDEA"
 
 [[keys.command]]
 key = "prefix+z"
@@ -92,9 +105,8 @@ status_indicators = "dots"
 delivery = "herdr"
 
 [advanced]
-scrollback_limit_bytes = 100000000
+scrollback_limit_bytes = 50000000
 
 [experimental]
 pane_history = true
 switch_ascii_input_source_in_prefix = true
-kitty_graphics = true
