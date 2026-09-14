@@ -9,7 +9,7 @@
 | 语言与包管理 | Node.js LTS、Bun、Go、Python 3.14、Java 21、uv、pnpm |
 | Shell 与终端 | Starship、zoxide、yazi、fzf、fd、ripgrep、jq、Neovim |
 | Git | GitHub CLI、git-open、git-delta、lazygit |
-| AI 开发 | Claude Code、Codex、OpenCode 2、pi、oh-my-pi、Herdr、agent-browser |
+| AI 开发 | Codex、OpenCode 2、pi、oh-my-pi、Herdr、agent-browser |
 | 规范与协作 | OpenSpec、Lark CLI |
 
 工具默认安装 `latest` 或指定的主版本。mise 配置设置了 `minimum_release_age = "24h"`，避免刚发布的版本立即进入日常环境。
