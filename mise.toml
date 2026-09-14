@@ -63,3 +63,6 @@ experimental = true
 
 [settings.npm]
 package_manager = "bun"
+
+[settings.github]
+credential_command = 'gh auth token --hostname "$MISE_CREDENTIAL_HOST"'
