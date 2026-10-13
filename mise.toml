@@ -9,13 +9,16 @@
 # To pin a version, replace "latest" with a concrete version string.
 
 [tools]
-# Language runtimes
+# Languages and package managers
 node = "lts"
 bun = "latest"
 go = "latest"
 java = "21"
 python = "3.14"
 uv = "latest"
+
+# Build tools
+maven = "latest"
 
 # Shell experience
 "aqua:starship/starship" = "latest"
@@ -40,6 +43,13 @@ herdr = "latest"
 codex = "latest"
 pi = "latest"
 "github:can1357/oh-my-pi" = { version = "latest", rename_exe = "omp" }
+# @opencode/cli ships a 229-byte stub as `bin/opencode.exe` and relies on its
+# postinstall to link the real platform binary. mise's bun installer skips
+# lifecycle scripts by default, so the stub survives and every run fails with
+# "postinstall script was not run". Run that one script explicitly instead of
+# opening up all dependency scripts with `bun_args = "--trust"`.
+"npm:@opencode/cli" = { version = "latest", postinstall = "node $MISE_TOOL_INSTALL_PATH/node_modules/@opencode/cli/postinstall.mjs" }
+grok = { version = "latest", bin = "grok", platforms = { windows-arm64 = { bin = "grok.exe", url = "https://storage.googleapis.com/grok-build-public-artifacts/cli/grok-{{ version }}-windows-aarch64.exe" }, windows-x64 = { bin = "grok.exe", url = "https://storage.googleapis.com/grok-build-public-artifacts/cli/grok-{{ version }}-windows-x86_64.exe" } }, url = 'https://storage.googleapis.com/grok-build-public-artifacts/cli/grok-{{ version }}-{{ os() }}-{{ arch(x64="x86_64", arm64="aarch64") }}', version_list_url = "https://x.ai/cli/stable" }
 
 # Spec-driven development
 "npm:@fission-ai/openspec" = "latest"
@@ -49,8 +59,6 @@ pi = "latest"
 
 # Containers
 lazydocker = "latest"
-
-# Uncategorized
 
 [settings]
 # Avoid installing newly published releases until they have been available for 24 hours.
