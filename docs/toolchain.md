@@ -1,6 +1,6 @@
 # 工具链管理
 
-`tools` 模块使用 [mise](https://mise.jdx.dev/) 管理语言运行时和大部分 CLI。[`mise.toml`](../mise.toml) 是 mise 工具清单，安装脚本会将它链接到 `~/.config/mise/config.toml`。OpenCode v2 和 Grok Build 是例外，由安装脚本调用各自的官方独立安装器。
+`tools` 模块使用 [mise](https://mise.jdx.dev/) 管理语言运行时和 CLI。[`mise.toml`](../mise.toml) 是 mise 工具清单，安装脚本会将它链接到 `~/.config/mise/config.toml`。
 
 ## 工具清单
 
@@ -9,12 +9,10 @@
 | 语言与包管理 | Node.js LTS、Bun、Go、Python 3.14、Java 21、uv、pnpm |
 | Shell 与终端 | Starship、zoxide、yazi、fzf、fd、ripgrep、jq、Neovim |
 | Git | GitHub CLI、git-open、git-delta、lazygit |
-| AI 开发 | Codex、OpenCode v2、Grok Build、pi、oh-my-pi、Herdr、agent-browser |
+| AI 开发 | Codex、pi、oh-my-pi、Herdr、agent-browser |
 | 规范与协作 | OpenSpec、Lark CLI |
 
-mise 管理的工具默认安装 `latest` 或指定的主版本。mise 配置设置了 `minimum_release_age = "24h"`，避免刚发布的版本立即进入日常环境。此设置不适用于独立安装的 OpenCode v2 和 Grok Build。
-
-OpenCode v2 使用[官方安装脚本](https://opencode.ai/v2/docs/)，安装到 `~/.opencode/bin/opencode`；Shell 快捷命令 `oc` 调用 `opencode`。Grok Build 使用 [xAI 官方安装脚本](https://x.ai/news/grok-build-cli)，安装到 `~/.grok/bin/grok`。不再使用旧的 `@opencode-ai/cli@next` Bun beta 安装方式。
+mise 管理的工具默认安装 `latest` 或指定的主版本。mise 配置设置了 `minimum_release_age = "24h"`，避免刚发布的版本立即进入日常环境。
 
 `git-open` 根据当前仓库的 remote 在默认浏览器中打开对应页面，支持 GitHub、GitLab、Bitbucket 和自建 GitLab。在仓库任意子目录运行：
 
@@ -37,15 +35,6 @@ mise upgrade # 升级允许更新的工具
 ```bash
 mise upgrade <tool> --minimum-release-age 0
 ```
-
-OpenCode v2 和 Grok Build 独立安装与升级：
-
-```bash
-curl -fsSL https://opencode.ai/v2/install | bash -s -- --no-modify-path
-curl -fsSL https://x.ai/cli/install.sh | SHELL=/bin/sh bash
-```
-
-OpenCode 的 `--no-modify-path` 和 Grok 安装进程的 `SHELL=/bin/sh` 避免安装器改写 Shell 配置；PATH 统一由 dotfiles 管理。仓库安装脚本会先移除 `npm:@opencode/cli`、`grok` 的旧 mise 安装，再调用官方安装器。已有环境可以执行 `./install.sh --tools --shell`，完成安装迁移并部署新的 PATH 和 `oc` 快捷命令。
 
 ## 添加工具
 
@@ -71,8 +60,6 @@ mise which node
 安装脚本会把以下目录加入 `PATH`：
 
 ```text
-~/.opencode/bin
-~/.grok/bin
 ~/.local/bin
 ~/.local/share/mise/shims
 ```
@@ -83,6 +70,6 @@ mise which node
 
 ```text
 mise.toml                 # 工具清单和 mise 设置
-install.sh                # mise、官方 Coding Agent 安装器、pnpm 和系统依赖
-dot_zshenv / dot_zprofile  # 独立 CLI 与 mise shims 的 PATH 和优先级
+install.sh                # mise、pnpm 和系统依赖
+dot_zshenv / dot_zprofile  # mise shims 的 PATH 和优先级
 ```

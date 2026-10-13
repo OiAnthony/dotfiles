@@ -164,22 +164,6 @@ _migrate_rtk() {
   fi
 }
 
-_install_coding_agents() {
-  # chezmoi owns Shell config and PATH; upstream installers only install tools.
-  export PATH="$HOME/.opencode/bin:$HOME/.grok/bin:$PATH"
-
-  if ! (set -o pipefail; curl -fsSL https://opencode.ai/v2/install | bash -s -- --no-modify-path); then
-    echo "  OpenCode 2... FAILED"
-    return 1
-  fi
-  echo "  OpenCode 2... ok"
-
-  if ! (set -o pipefail; curl -fsSL https://x.ai/cli/install.sh | SHELL=/bin/sh bash); then
-    echo "  Grok Build... FAILED"
-    return 1
-  fi
-  echo "  Grok Build... ok"
-}
 
 _install_mise() {
   if ! command -v mise &>/dev/null; then
@@ -212,7 +196,6 @@ _install_mise() {
   mise install -q 2>/dev/null || {
     echo "  mise install... partial (网络受限或限流，可设 https_proxy / GITHUB_TOKEN 重试)"
   }
-  mise uninstall --all "npm:@opencode/cli" grok || return 1
 
   echo "  mise + 工具链... ok"
 }
@@ -350,8 +333,6 @@ _install_tools() {
     echo "  OS... skip: $CURRENT_OS 不受支持"
     exit 1
   fi
-
-  _install_coding_agents
 
   if [[ "$CURRENT_OS" == "Darwin" ]]; then
     export PNPM_HOME="$HOME/Library/pnpm"

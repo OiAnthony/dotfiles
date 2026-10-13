@@ -68,18 +68,6 @@ mise which codex >/dev/null
 mise exec -- node -e 'process.exit(process.version.startsWith("v") ? 0 : 1)'
 mise exec -- bun --version >/dev/null
 mise exec -- python -c 'import sys; raise SystemExit(sys.version_info < (3, 14))'
-log_info "Checking standalone Coding Agent resolution..."
-env TERM=xterm-256color zsh -lic '
-    for tool in opencode grok; do
-        expected="$HOME/.$tool/bin/$tool"
-        actual="$(command -v "$tool")"
-        if [[ "$actual" != "$expected" ]]; then
-            print -u2 "Expected $tool to resolve to $expected, got $actual"
-            exit 1
-        fi
-        "$tool" --version || exit 1
-    done
-'
 
 log_info "Measuring full interactive startup..."
 timings="$(mktemp)"

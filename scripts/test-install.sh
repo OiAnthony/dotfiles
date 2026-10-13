@@ -101,7 +101,7 @@ main() {
         exit 1
     fi
 
-    export PATH="$HOME/.opencode/bin:$HOME/.grok/bin:$HOME/.local/bin:$HOME/.local/share/mise/shims:$HOME/.local/share/pnpm/bin:$HOME/Library/pnpm:$PATH"
+    export PATH="$HOME/.local/bin:$HOME/.local/share/mise/shims:$HOME/.local/share/pnpm/bin:$HOME/Library/pnpm:$PATH"
 
     log_info "Verifying installation results..."
     local failed=0
@@ -151,10 +151,6 @@ main() {
         log_info "Checking mise config symlink..."
         check_symlink "$HOME/.config/mise/config.toml" "$PROJECT_ROOT/mise.toml" || ((failed += 1))
     fi
-
-    log_info "Checking officially installed Coding Agents..."
-    check_command opencode || ((failed += 1))
-    check_command grok || ((failed += 1))
 
     log_info "Checking chezmoi-deployed dotfiles..."
     check_file "$HOME/.zshrc" || ((failed += 1))

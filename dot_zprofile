@@ -15,5 +15,5 @@ path+=("$HOME/Library/Application Support/JetBrains/Toolbox/scripts")
 
 # macOS /etc/zprofile runs path_helper after ~/.zshenv and moves system paths
 # ahead of user paths. Restore user tool precedence without spawning mise at login.
-path=("$HOME/.opencode/bin" "$HOME/.grok/bin" "$HOME/.local/share/mise/shims" "$HOME/.local/bin" $path)
+path=("$HOME/.local/share/mise/shims" "$HOME/.local/bin" $path)
 export PATH FPATH

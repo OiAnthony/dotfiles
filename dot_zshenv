@@ -1,8 +1,6 @@
 # Keep this file cheap: it runs for every Zsh process.
 typeset -U path PATH
 path=(
-  "$HOME/.opencode/bin"
-  "$HOME/.grok/bin"
   "$HOME/.local/bin"
   "$HOME/.local/share/mise/shims"
   "$HOME/.local/share/pnpm/bin"
