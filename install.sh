@@ -164,31 +164,21 @@ _migrate_rtk() {
   fi
 }
 
-_migrate_opencode_v2() {
-  local legacy_bin="$HOME/.opencode/bin/opencode"
+_install_coding_agents() {
+  # chezmoi owns Shell config and PATH; upstream installers only install tools.
+  export PATH="$HOME/.opencode/bin:$HOME/.grok/bin:$PATH"
 
-  if [[ -f "$legacy_bin" ]]; then
-    rm -f -- "$legacy_bin" || {
-      echo "  OpenCode v1 standalone binary removal... FAILED"
-      return 1
-    }
-    echo "  OpenCode v1 standalone binary removal... ok"
-  fi
-
-  if mise uninstall --all opencode >/dev/null 2>&1; then
-    echo "  OpenCode v1 mise installation removal... ok"
-  elif mise ls opencode 2>/dev/null | grep -q '[0-9]'; then
-    echo "  OpenCode v1 mise installation removal... FAILED"
+  if ! (set -o pipefail; curl -fsSL https://opencode.ai/v2/install | bash -s -- --no-modify-path); then
+    echo "  OpenCode 2... FAILED"
     return 1
   fi
+  echo "  OpenCode 2... ok"
 
-  mise uninstall --all "npm:@opencode-ai/cli" >/dev/null 2>&1 || true
-  if ! rm -rf -- \
-    "$HOME/.local/share/mise/installs/opencode" \
-    "$HOME/.local/share/mise/installs/npm-opencode-ai-cli"; then
-    echo "  Stale OpenCode mise installation cleanup... FAILED"
+  if ! (set -o pipefail; curl -fsSL https://x.ai/cli/install.sh | SHELL=/bin/sh bash); then
+    echo "  Grok Build... FAILED"
     return 1
   fi
+  echo "  Grok Build... ok"
 }
 
 _install_mise() {
@@ -219,23 +209,12 @@ _install_mise() {
   fi
   ln -sf "$REPO_DIR/mise.toml" "$mise_cfg"
 
-  _migrate_opencode_v2 || exit 1
-
-  (cd "$HOME" && mise use -g bun@latest) >/dev/null 2>&1 || {
-    echo "  bun... FAILED"
-    exit 1
-  }
   mise install -q 2>/dev/null || {
     echo "  mise install... partial (网络受限或限流，可设 https_proxy / GITHUB_TOKEN 重试)"
   }
+  mise uninstall --all "npm:@opencode/cli" grok || return 1
 
-  export PATH="$HOME/.bun/bin:$HOME/.local/share/mise/shims:$PATH"
-  bun install -g --trust @opencode-ai/cli@next >/dev/null 2>&1 || {
-    echo "  OpenCode 2... FAILED"
-    exit 1
-  }
-  echo "  mise + Bun + 工具链... ok"
-  echo "  OpenCode 2... ok"
+  echo "  mise + 工具链... ok"
 }
 
 _install_fonts_macos() {
@@ -371,6 +350,8 @@ _install_tools() {
     echo "  OS... skip: $CURRENT_OS 不受支持"
     exit 1
   fi
+
+  _install_coding_agents
 
   if [[ "$CURRENT_OS" == "Darwin" ]]; then
     export PNPM_HOME="$HOME/Library/pnpm"

@@ -46,7 +46,7 @@ curl -fsSL https://raw.githubusercontent.com/OiAnthony/dotfiles/main/install.sh 
 
 | 参数 | 安装内容 | 关键行为 |
 | --- | --- | --- |
-| `--tools` | mise、`mise.toml` 中的工具和 pnpm | macOS 还会安装字体；Linux 会补齐基础系统包 |
+| `--tools` | mise、`mise.toml` 中的工具、OpenCode v2、Grok Build 和 pnpm | 两个独立 Coding Agent 使用官方安装器；macOS 还会安装字体；Linux 会补齐基础系统包 |
 | `--shell` | chezmoi、Zsh、Git、Starship、Neovim 配置、插件和生成脚本 | 可以独立安装，不初始化 `.agents` submodule |
 | `--agents` | 固定版本的 `.agents` submodule、`~/.agents` 软链接和客户端配置 | submodule 获取失败或工作树有本地修改时停止；客户端同步需要 `bunx` |
 
