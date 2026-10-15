@@ -41,8 +41,8 @@ maven = "latest"
 herdr = "latest"
 "npm:agent-browser" = "latest"
 codex = "latest"
-pi = "latest"
-"github:can1357/oh-my-pi" = { version = "latest", rename_exe = "omp" }
+pi = { version = "latest", minimum_release_age = "0" }
+"github:can1357/oh-my-pi" = { version = "latest", rename_exe = "omp", minimum_release_age = "0" }
 
 # Spec-driven development
 "npm:@fission-ai/openspec" = "latest"
@@ -57,6 +57,7 @@ lazydocker = "latest"
 # Avoid installing newly published releases until they have been available for 24 hours.
 # Override once when needed: mise upgrade <tool> --minimum-release-age 0
 minimum_release_age = "24h"
+tool_update.global_auto = "6h"
 # Trust this config when symlinked into ~/.config/mise/config.toml.
 # (mise prompts on first use of repo-local configs; the global file is
 # implicitly trusted, but we set this explicitly for clarity.)
