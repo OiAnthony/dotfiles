@@ -1,4 +1,10 @@
 # Keep this file cheap: it runs for every Zsh process.
+# mise 2026.10.7+ spawns `mise __tool-update` from current_exe(). A tool shim
+# is a symlink to mise, so current_exe() is the shim and the tool receives
+# __tool-update. Pin the real binary; the update child drops this variable
+# and then uses its own executable path.
+export __MISE_BIN="${HOME}/.local/bin/mise"
+
 typeset -U path PATH
 path=(
   "$HOME/.local/bin"
