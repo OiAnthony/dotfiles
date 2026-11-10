@@ -102,6 +102,7 @@ command = "\"$HOME/.local/bin/herdr-copy-transcript\" \"$HERDR_ACTIVE_PANE_ID\" 
 description = "copy full transcript"
 
 [ui]
+sidebar_collapsed_mode = "compact"
 show_agent_labels_on_pane_borders = true
 prompt_new_tab_name = false
 agent_panel_sort = "spaces"
