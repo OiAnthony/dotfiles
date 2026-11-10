@@ -9,7 +9,7 @@
 | 语言与包管理 | Node.js LTS、Bun、Go、Python 3.14、Java 21、uv、pnpm |
 | Shell 与终端 | Starship、zoxide、yazi、fzf、fd、ripgrep、jq、Neovim |
 | Git | GitHub CLI、git-open、git-delta、lazygit |
-| AI 开发 | Codex、pi、oh-my-pi、Herdr、agent-browser |
+| AI 开发 | Codex、pi、oh-my-pi、Herdr、agent-browser、agent-desktop |
 | 规范与协作 | OpenSpec、Lark CLI |
 
 mise 管理的工具默认安装 `latest` 或指定的主版本。mise 配置设置了 `minimum_release_age = "24h"`，避免刚发布的版本立即进入日常环境。
@@ -35,6 +35,30 @@ mise upgrade # 升级允许更新的工具
 ```bash
 mise upgrade <tool> --minimum-release-age 0
 ```
+
+### 浏览器与桌面自动化
+
+`agent-browser` 和 `agent-desktop` 的 CLI 由 mise 管理，不再单独执行 `npm install -g`。`agent-desktop` 的 `bun_args = "--trust"` 允许该工具安装时执行 postinstall，链接原生启动器；不改变其他工具的脚本策略。
+
+首次使用浏览器时下载 Chrome，再检查桌面端版本与权限：
+
+```bash
+agent-browser install
+agent-desktop version
+agent-desktop status
+```
+
+`agent-desktop status` 应返回 `ok: true`。macOS 的辅助功能权限用于读取和操作界面；录屏权限只在截图时需要。权限由用户在系统设置中授予，不随工具安装自动开启。
+
+两个官方 skill 通过 `npx skills` 管理，位于 `~/.agents/skills/`，来源记录在 `~/.agents/.skill-lock.json`。安装时指定客户端，避免尝试不支持全局安装的客户端：
+
+```bash
+npx skills add vercel-labs/agent-browser --skill agent-browser --global --agent codex --agent claude-code --yes
+npx skills add vercel-labs/agent-desktop --skill agent-desktop --global --agent codex --agent claude-code --yes
+npx skills update agent-browser agent-desktop --global --yes
+```
+
+当前 `~/.agents` 链接到本仓库的 `.agents` submodule，因此 skill 文件和锁文件变更属于该子仓库。
 
 ## 添加工具
 

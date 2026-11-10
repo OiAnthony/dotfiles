@@ -40,6 +40,7 @@ maven = "latest"
 # AI
 herdr = "latest"
 "npm:agent-browser" = "latest"
+"npm:agent-desktop" = { version = "latest", bun_args = "--trust" }
 codex = "latest"
 pi = { version = "latest", minimum_release_age = "0" }
 "github:can1357/oh-my-pi" = { version = "latest", rename_exe = "omp", minimum_release_age = "0" }
