@@ -11,6 +11,7 @@
 | Git | GitHub CLI、git-open、git-delta、lazygit |
 | AI 开发 | Codex、pi、oh-my-pi、Herdr、agent-browser、agent-desktop |
 | 规范与协作 | OpenSpec、Lark CLI |
+| 懒猫微服 | lzc-cli |
 
 mise 管理的工具默认安装 `latest` 或指定的主版本。mise 配置设置了 `minimum_release_age = "24h"`，避免刚发布的版本立即进入日常环境。
 

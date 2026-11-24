@@ -51,6 +51,9 @@ pi = { version = "latest", minimum_release_age = "0" }
 # Collaboration
 "npm:@larksuite/cli" = "latest"
 
+# Lazycat MicroServer
+"npm:@lazycatcloud/lzc-cli" = "latest"
+
 # Containers
 lazydocker = "latest"
 
